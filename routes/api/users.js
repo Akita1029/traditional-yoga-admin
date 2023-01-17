@@ -44,7 +44,7 @@ router.post("/signup", async (req, res) => {
         req.body.firstName,
         req.body.lastName,
         req.body.nickName,
-        req.body.interest,
+        req.body.interest == "yes" ? 1 : 0,
         moment(req.body.birthDate).format("YYYY-MM-DD"),
         req.body.whatsapp,
         req.body.gender == "female" ? 0 : 1,
