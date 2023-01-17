@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const mysqlConnection = require("../../config/config");
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
 const verify = require("../../verify/verifyToken");
 
 // Load Input Validation
@@ -44,7 +45,7 @@ router.post("/signup", async (req, res) => {
         req.body.lastName,
         req.body.nickName,
         req.body.interest,
-        req.body.birthDate,
+        moment(req.body.birthDate).format("YYYY-MM-DD"),
         req.body.whatsapp,
         req.body.gender,
         req.body.language,
