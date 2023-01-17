@@ -28,11 +28,9 @@ router.post("/signup", async (req, res) => {
       rows.length ? (emailExist = true) : (emailExist = false);
     }
   );
-  console.log("EmailExist:", emailExist);
   //salting
   const salt = await bcrypt.genSalt(10);
-  const random_password = await bcrypt.genSalt(16);
-  const hashedPassword = await bcrypt.hash(random_password, salt);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
   if (!emailExist) {
     mysqlConnection.query(
