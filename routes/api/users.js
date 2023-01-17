@@ -9,6 +9,13 @@ const verify = require("../../verify/verifyToken");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
+router.post("/alldata", async (req, res) => {
+  mysqlConnection.query("Select * from user", (err, rows, fields) => {
+    !err ? res.json(rows) : console.log(err);
+  });
+});
+
+
 // Register user
 router.post("/signup", async (req, res) => {
   let errors = ""
@@ -57,13 +64,14 @@ router.post("/signup", async (req, res) => {
         !err ? console.log("register success") : console.log(err);
       }
     );
+    const token = jwt.sign({ id:  Math.random() % 100}, process.env.TOKEN_SECRET);
+
     const payload = {
-      email: req.body.email,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      messages: "Success!"
+      token: token,
+      role: 3
     };
-    res.json(payload);
+    res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });
+    return res.json(payload);
   } else {
     errors.emailexist = "Email already exists!";
     return res.status(400).json(errors);
@@ -103,8 +111,12 @@ router.post("/login", async (req, res) => {
 
   const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
 
+  const payload = {
+    token: token,
+    role: user.role,
+  };
   res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });
-  return res.json(token);
+  return res.json(payload);
 });
 
 module.exports = router;
