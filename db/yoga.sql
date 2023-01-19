@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 19/01/2023 20:45:15
+ Date: 19/01/2023 20:59:54
 */
 
 SET NAMES utf8mb4;
@@ -396,6 +396,5 @@ INSERT INTO `user` VALUES (1, 'admin1@gmail.com', '$2a$10$LxpBbl7OKFy.h/48l5OlxO
 INSERT INTO `user` VALUES (2, 'chiefmentor@gmail.com', '$2a$10$pvNIV2NoyP1JyHWuKZ9EQOZYahOpWh5kipkURHc1heFe9CfY6ZCXa', 'Senju', 'Tobirama', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 1, NULL);
 INSERT INTO `user` VALUES (3, 'mentor@gmail.com', '$2a$10$1HOqdPPaZ08bcSPA5f0wzu3mSFyXx176f8fBwhw3JdMUdJJnDlulu', 'Sarutobi', 'Hiruzen', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 2, NULL);
 INSERT INTO `user` VALUES (4, 'student@gmail.com', '$2a$10$otEbic2tvKQRzR.yD9fz1Ofgcp1OXz44Wpd/qnNUkG.0Q42D/LbbS', 'Namikage', 'Minato', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 3, NULL);
-INSERT INTO `user` VALUES (8, 'test1@gmail.com', '$2a$10$9/unHSNVbqknV7qdr2C0VODaxlqnlXU4vL5fACfDv8yT2S5N2ODLW', 'A', 'A', 'j', 0, '0000-00-00', 'j', 0, 'j', 'j', 'j', 'j', 'j', 'j', 'j', 'j', 'j', 3, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
