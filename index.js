@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 
 const users = require("./routes/api/users");
 const students = require("./routes/api/students");
-const support = require("./routes/api/support");
 const courses = require("./routes/api/courses");
 
 // Body parser middleware
@@ -22,9 +21,8 @@ app.use((_req, res, next) => {
 });
 
 app.use("/api/users", users);
-app.use("/api/courses", courses);
 app.use("/api/students", students);
-app.use("/api/support", support);
+app.use("/api/courses", courses);
 
 app.listen(8000, () => {
   console.log("Express Server started at 8000");
