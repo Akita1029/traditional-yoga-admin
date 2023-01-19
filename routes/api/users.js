@@ -18,9 +18,53 @@ router.post("/alldata", async (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 // Register user
 router.post("/reg", async (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
+=======
+//Register User
+router.post("/takecourse", async (req, res) => {
+  let errors = ""
+  let emailExist = false;
+
+  mysqlConnection.query(
+    "SELECT * FROM user WHERE email = ?",
+    [req.body.email],
+    (err, rows, fields) => {
+      rows.length ? (errors.message = "email_exists") : (errors.message = "");
+    }
+  );
+  //salting
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+  if (errors.message == "") {
+    mysqlConnection.query(
+      "INSERT INTO user (email, password, first_name, last_name, role) " + 
+        " VALUES (?,?,?,?,?)",
+      [
+        req.body.email,
+        hashedPassword,
+        req.body.firstName,
+        req.body.lastName,
+        4
+      ],
+      (err, rows, fields) => {
+        !err ? errors.message = "" : errors.message = "insert_fail";
+      }
+    );    
+    return res.status(200).json({message: "success"});
+  } else {
+    errors.emailexist = "Email already exists!";
+    return res.status(501).json({message: "fail_email"});
+  }
+});
+
+// Take Course
+router.post("/takecourse", async (req, res) => {
+  let errors = ""
+>>>>>>> 97c7f6a764c1ed4ab5e8418763ce42cf828ea7dd
   let emailExist = false;
 
   // Check Validation
