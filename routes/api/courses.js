@@ -2,8 +2,14 @@ const express = require("express");
 const router = express.Router();
 const mysqlConnection = require("../../config/config");
 
-router.post("/alldata", async (req, res) => {
+router.get("/alldata", async (req, res) => {
   mysqlConnection.query("Select * from course", (err, rows, fields) => {
+    !err ? res.json(rows) : console.log(err);
+  });
+});
+
+router.get("/load_online_courses", async (req, res) => {
+  mysqlConnection.query("Select * from course Where is_free = 1", (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
   });
 });
