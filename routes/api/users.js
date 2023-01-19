@@ -18,13 +18,9 @@ router.post("/alldata", async (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-// Register user
-router.post("/reg", async (req, res) => {
-  const { errors, isValid } = validateRegisterInput(req.body);
-=======
+
 //Register User
-router.post("/takecourse", async (req, res) => {
+router.post("/signup", async (req, res) => {
   let errors = ""
   let emailExist = false;
 
@@ -64,7 +60,7 @@ router.post("/takecourse", async (req, res) => {
 // Take Course
 router.post("/takecourse", async (req, res) => {
   let errors = ""
->>>>>>> 97c7f6a764c1ed4ab5e8418763ce42cf828ea7dd
+
   let emailExist = false;
 
   // Check Validation
