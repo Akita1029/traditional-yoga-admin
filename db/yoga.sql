@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 19/01/2023 20:59:54
+ Date: 20/01/2023 20:45:17
 */
 
 SET NAMES utf8mb4;
@@ -385,16 +385,15 @@ CREATE TABLE `user`  (
   `province` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `zip_code` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `role` int NULL DEFAULT NULL,
-  `last_logged_in` time NULL DEFAULT NULL,
+  `last_logged_in` timestamp NULL DEFAULT NULL,
+  `hash` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin1@gmail.com', '$2a$10$LxpBbl7OKFy.h/48l5OlxO2frQyYgigJWXdTX/hXVLpW3KXvf9Bp.', 'Senju', 'Hasirama', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 0, NULL);
-INSERT INTO `user` VALUES (2, 'chiefmentor@gmail.com', '$2a$10$pvNIV2NoyP1JyHWuKZ9EQOZYahOpWh5kipkURHc1heFe9CfY6ZCXa', 'Senju', 'Tobirama', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 1, NULL);
-INSERT INTO `user` VALUES (3, 'mentor@gmail.com', '$2a$10$1HOqdPPaZ08bcSPA5f0wzu3mSFyXx176f8fBwhw3JdMUdJJnDlulu', 'Sarutobi', 'Hiruzen', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 2, NULL);
-INSERT INTO `user` VALUES (4, 'student@gmail.com', '$2a$10$otEbic2tvKQRzR.yD9fz1Ofgcp1OXz44Wpd/qnNUkG.0Q42D/LbbS', 'Namikage', 'Minato', 'a', 0, '1992-12-29', '1932354', 4, 'english', 'c', 'd', 'germany', 'berlin', 'stress', 'y', 'x', 'z', 3, NULL);
+INSERT INTO `user` VALUES (34, 'laihunter911@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$FlTBdpR1JKi.Jo9ucZp0guZ7ilVHNrcoebpnISpTLBeCCDnbr.XQO', '1');
 
 SET FOREIGN_KEY_CHECKS = 1;
