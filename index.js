@@ -24,6 +24,6 @@ app.use("/api/users", users);
 app.use("/api/students", students);
 app.use("/api/courses", courses);
 
-app.listen(8000, () => {
-  console.log("Express Server started at 8000");
+app.listen(process.env.PORT || 8000, () => {
+  console.log(`Yoga Server started at ${process.env.PORT}`);
 });
