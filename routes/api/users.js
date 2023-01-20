@@ -21,71 +21,92 @@ router.post("/alldata", async (req, res) => {
 
 //Register User
 router.post("/signup", async (req, res) => {
-  console.log("SignUP")
+  console.log("SignUP start")
+  //salting
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(req.body.password, salt)
   let errors = {
-    email: 'none'
+    email: 'none',
+    message: ''
   }
   let role = 4 // 0: Admin, 1: Chief, 2: Mentor, 3: Student, 4: Guest
   let user = {}
   mysqlConnection.query(
     "SELECT * FROM user WHERE id > 0",
     [],
-    (err, rows, fields) => {
+    (err, rows, fields) => {      
       rows.length == 0? (role = 0) : (role = 4);
-    }
+      console.log("Role:", role)
+      if(role == 0){
+        mysqlConnection.query(
+          "INSERT INTO user (email, hash, password, first_name, last_name, role,status) " + 
+            " VALUES (?,?,?,?,?,?,?)",
+          [
+            req.body.email,
+            hashedPassword,
+            req.body.password,
+            req.body.firstName,
+            req.body.lastName,
+            role,
+            1
+          ],
+          (err, rows, fields) => {
+            if(err == null){
+              const token = jwt.sign({ id: rows.insertId }, process.env.TOKEN_SECRET);
+              const payload = {
+                token: token,
+                role: role,
+                message: "admin_success"
+              };        
+              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });              
+              console.log("Admin success")
+              return res.status(200).json(payload)
+            } else  {
+              console.log("Admin Fail")
+              return res.status(204).json({message: "insert_fail"})
+            }
+          }              
+        )
+      } else if(role != 0) {
+        mysqlConnection.query(
+          "SELECT * FROM user WHERE email = ?",
+          [req.body.email],
+          (err, rows, fields) => {
+            rows.length > 0 ? (errors.email = "exists") : (errors.email = "none")
+            console.log(errors.email)
+            if (errors.email == "none") {
+              mysqlConnection.query(
+                "INSERT INTO user (email, hash, password, first_name, last_name, role, status) " + 
+                  " VALUES (?,?,?,?,?,?,?)",
+                [
+                  req.body.email,
+                  hashedPassword,
+                  req.body.password,
+                  req.body.firstName,
+                  req.body.lastName,
+                  role,
+                  0
+                ],
+                (err, rows, fields) => {
+                  if(err == null) {
+                    console.log("Guest success")
+                    return res.status(201).json({message: "success"})
+                  }
+                  else {
+                    console.log("Guest fail")
+                    return res.status(204).json({message: "insert_fail"})
+                  }
+                }
+              )
+            } else {
+                console.log("Email exists!")
+                return res.status(205).json({message: "email_exist"})
+            }
+          }
+        )
+      }
+    }    
   )
-  
-  if(role != 0) {
-    mysqlConnection.query(
-      "SELECT * FROM user WHERE email = ?",
-      [req.body.email],
-      (err, rows, fields) => {
-        rows.length ? (errors.email = "exists") : (errors.email = "none")
-      }
-    )
-  } 
-
-  //salting
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(req.body.password, salt)
-
-  if (errors.email == "none") {
-    mysqlConnection.query(
-      "INSERT INTO user (email, hash, password, first_name, last_name, role) " + 
-        " VALUES (?,?,?,?,?)",
-      [
-        req.body.email,
-        hashedPassword,
-        req.body.password,
-        req.body.firstName,
-        req.body.lastName,
-        role
-      ],
-      (err, rows, fields) => {
-        !err ? errors.message = "success" : errors.message = "insert_fail"
-        if(!err) user = rows[0]
-      }
-    )
-    if(errors.message == "insert_fail") 
-      return res.status(501).json({message: "insert_fail"})
-    else if(errors.message == "success" && role == 4)
-      return res.status(200).json({message: "success"})
-    else if(errors.message == "success" && role == 0){
-      const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-
-      const payload = {
-        token: token,
-        role: role,
-        user: user.last_name,
-        message: "admin_success"
-      };
-
-      res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });
-      return res.status(201).json(payload)    
-    } 
-  } else {
-      return res.status(502).json({message: "email_exist"})
-  }  
 })
 
 // Take Course
