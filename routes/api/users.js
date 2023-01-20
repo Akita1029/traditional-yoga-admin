@@ -8,7 +8,8 @@ const verify = require("../../verify/verifyToken")
 // Load Input Validation
 const validateRegisterInput = require("../../validation/register")
 const validateLoginInput = require("../../validation/login")
-
+const crypto = require("crypto")
+const nodemailer = require("nodemailer")
 // Get all user data
 
 router.post("/alldata", async (req, res) => {
@@ -32,11 +33,11 @@ router.post("/signup", async (req, res) => {
   mysqlConnection.query(
     "SELECT * FROM user WHERE id > 0",
     [],
-    (err, rows, fields) => {      
+    (err, rows, fields) => {
       rows.length == 0? (role = 0) : (role = 4);
       if(role == 0){
         mysqlConnection.query(
-          "INSERT INTO user (email, hash, password, first_name, last_name, role,status, last_logged_in) " + 
+          "INSERT INTO user (email, hash, password, first_name, last_name, role,status, last_logged_in) " +
             " VALUES (?,?,?,?,?,?,?)",
           [
             req.body.email,
@@ -55,13 +56,13 @@ router.post("/signup", async (req, res) => {
                 token: token,
                 role: role,
                 message: "admin_success"
-              };        
-              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });                    
+              };
+              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });
               return res.status(200).json(payload)
             } else  {
               return res.status(204).json({message: "insert_fail"})
             }
-          }              
+          }
         )
       } else if(role != 0) {
         mysqlConnection.query(
@@ -71,7 +72,7 @@ router.post("/signup", async (req, res) => {
             rows.length > 0 ? (errors.email = "exists") : (errors.email = "none")
             if (errors.email == "none") {
               mysqlConnection.query(
-                "INSERT INTO user (email, hash, password, first_name, last_name, role, status) " + 
+                "INSERT INTO user (email, hash, password, first_name, last_name, role, status) " +
                   " VALUES (?,?,?,?,?,?,?)",
                 [
                   req.body.email,
@@ -97,71 +98,114 @@ router.post("/signup", async (req, res) => {
           }
         )
       }
-    }    
+    }
   )
 })
 
-// Take Course
-router.post("/takecourse", async (req, res) => {
-  let errors = ""
 
-  let emailExist = false;
 
-  // Check Validation
-  if (!isValid) {
-    return res.status(400).json(errors);
+// forget Password
+router.post("/forgetPassword", async (req, res) => {
+  const { email } = req.body
+  if(email === ''){
+    return res.status(205).send('email required')
   }
-
+  let not_registered = false
   mysqlConnection.query(
     "SELECT * FROM user WHERE email = ?",
-    [req.body.email],
+    [email],
     (err, rows, fields) => {
-      rows.length ? (emailExist = true) : (emailExist = false);
-    }
-  );
+      rows.length ? (user = rows[0]) : (not_registered = true)
+      if(not_registered){
+        return res.status(204).json({message: "not_registered"})
+      } else {
+        const token = crypto.randomBytes(20).toString('hex')
+        mysqlConnection.query(
+          "UPDATE user SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?",
+          [token, Date.now() + 360000, email],
+          (err, rows, fields) => {
+            if(err) return res.status(203).json({message: "update fail"})
+            const transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: `${process.env.EMAIL_ADDRESS}`,
+                pass: `${process.env.EMAIL_PASSWORD}`
+              }
+            })
 
-  //salting
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+            const mailOptions = {
+              from: 'support@yoga.com',
+              to: `${email}`,
+              subject: 'Link To Reset Password',
+              text:
+                'You are receiving this because you (or someone else) have requested the reset of the passford for your account.\n\n'
+                + 'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n'
+                + process.env.Domain + `api/users/reset/${token} \n\n`
+                + 'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+            }
 
-  if (!emailExist) {
-    mysqlConnection.query(
-      "INSERT INTO user (email, password, first_name, last_name, nick_name, ryit_cert, birthday, whatsapp_phonenumber, gender, language, profession, education_detail, country, street_address, address_line_2, city, province, zip_code) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      [
-        req.body.email,
-        hashedPassword,
-        req.body.first_name,
-        req.body.last_name,
-        req.body.nick_name,
-        req.body.ryit_cert,
-        req.body.birthday,
-        req.body.whatsapp_phonenumber,
-        req.body.gender,
-        req.body.language,
-        req.body.profession,
-        req.body.education_detail,
-        req.body.country,
-        req.body.street_address,
-        req.body.address_line_2,
-        req.body.city,
-        req.body.province,
-        req.body.zip_code,
-      ],
-      (err, rows, fields) => {
-        !err ? console.log("register success") : console.log(err);
+            transporter.sendMail(mailOptions, (err, response) => {
+              if (err) {
+                console.log('there was an error:', err)
+              } else {
+                return res.status(200).json('email_sent')
+              }
+            })
+          }
+        )
       }
-    );
-    const payload = {
-      email: req.body.email,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-    };
-    res.json(payload);
-  } else {
-    errors.emailexist = "Email already exists!";
-    return res.status(400).json(errors);
-  }
-});
+    }
+  )
+})
+
+// check reset token valid
+router.post("/checkresettoken", async (req, res) => {
+  const { resetPasswordToken } = req.body
+  mysqlConnection.query(
+    "SELECT * FROM user WHERE resetPasswordToken = ? and resetPasswordExpires < ?",
+    [ resetPasswordToken, Date.now()],
+    (err, rows, fields) => {
+      if(!rows.length){
+        return res.status(201).json('invalid_link')
+      } else {
+        return res.status(200).send({
+          email: rows[0].email,
+          message: 'link_ok'
+        })
+      }
+    }
+  )
+})
+
+// reset password via email
+router.put("/resetPassword", async (req, res) => {
+  const { email, password } = req.body
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(req.body.password, salt)
+  mysqlConnection.query(
+    "SELECT * from user WHERE email = ?",
+    [email],
+    (err, rows, fields) => {
+      if(rows.length){
+        user = rows[0]
+        mysqlConnection.query(
+          "UPDATE user SET hash = ?, password = ?, resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?",
+          [hashedPassword, password, null, null, email],
+          (err, rows, fields) => {
+            if(!err){
+              return res.status(200).send({message: 'password_updated'})
+            } else {
+              return res.status(201).json('update_fail')
+            }
+          }
+        )
+      } else {
+        return res.status(404).json('no_user_exists')
+      }
+    }
+  )
+})
+
 
 // Login user
 router.post("/login", async (req, res) => {
@@ -174,7 +218,7 @@ router.post("/login", async (req, res) => {
     "SELECT * FROM user WHERE email = ?",
     [req.body.email],
     (err, rows, fields) => {
-      rows.length ? (user = rows[0]) : (user = {});
+      rows.length ? (user = rows[0]) : (user = {})
       if (!user.email) {
         errors.message = "Email does not exists"
         return res.status(204).json(errors)
@@ -183,7 +227,7 @@ router.post("/login", async (req, res) => {
         errors.message = "Password is Invalid"
         return res.status(203).json(errors)
       }
-    
+
       if (user.status == 0) {
         errors.message = "Pending Status"
         return res.status(201).json(error)
@@ -210,7 +254,7 @@ router.post("/login", async (req, res) => {
                   role: user.role,
                   user: user.last_name,
                   resetPassword: resetPassword
-                } 
+                }
                 return res.status(200).json(payload)
               } else {
                 return res.status(205).json(errors)
@@ -218,7 +262,7 @@ router.post("/login", async (req, res) => {
             }
           )
         }
-      )     
+      )
     }
   );
 });
