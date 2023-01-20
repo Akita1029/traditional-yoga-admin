@@ -21,7 +21,6 @@ router.post("/alldata", async (req, res) => {
 
 //Register User
 router.post("/signup", async (req, res) => {
-  console.log("SignUP start")
   //salting
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(req.body.password, salt)
@@ -30,16 +29,14 @@ router.post("/signup", async (req, res) => {
     message: ''
   }
   let role = 4 // 0: Admin, 1: Chief, 2: Mentor, 3: Student, 4: Guest
-  let user = {}
   mysqlConnection.query(
     "SELECT * FROM user WHERE id > 0",
     [],
     (err, rows, fields) => {      
       rows.length == 0? (role = 0) : (role = 4);
-      console.log("Role:", role)
       if(role == 0){
         mysqlConnection.query(
-          "INSERT INTO user (email, hash, password, first_name, last_name, role,status) " + 
+          "INSERT INTO user (email, hash, password, first_name, last_name, role,status, last_logged_in) " + 
             " VALUES (?,?,?,?,?,?,?)",
           [
             req.body.email,
@@ -48,7 +45,8 @@ router.post("/signup", async (req, res) => {
             req.body.firstName,
             req.body.lastName,
             role,
-            1
+            1,
+            new Date().valueOff
           ],
           (err, rows, fields) => {
             if(err == null){
@@ -58,11 +56,9 @@ router.post("/signup", async (req, res) => {
                 role: role,
                 message: "admin_success"
               };        
-              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });              
-              console.log("Admin success")
+              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });                    
               return res.status(200).json(payload)
             } else  {
-              console.log("Admin Fail")
               return res.status(204).json({message: "insert_fail"})
             }
           }              
@@ -73,7 +69,6 @@ router.post("/signup", async (req, res) => {
           [req.body.email],
           (err, rows, fields) => {
             rows.length > 0 ? (errors.email = "exists") : (errors.email = "none")
-            console.log(errors.email)
             if (errors.email == "none") {
               mysqlConnection.query(
                 "INSERT INTO user (email, hash, password, first_name, last_name, role, status) " + 
@@ -89,17 +84,14 @@ router.post("/signup", async (req, res) => {
                 ],
                 (err, rows, fields) => {
                   if(err == null) {
-                    console.log("Guest success")
                     return res.status(201).json({message: "success"})
                   }
                   else {
-                    console.log("Guest fail")
                     return res.status(204).json({message: "insert_fail"})
                   }
                 }
               )
             } else {
-                console.log("Email exists!")
                 return res.status(205).json({message: "email_exist"})
             }
           }
@@ -173,45 +165,62 @@ router.post("/takecourse", async (req, res) => {
 
 // Login user
 router.post("/login", async (req, res) => {
-  const { errors, isValid } = validateLoginInput(req.body);
-
+  const { errors, isValid } = validateLoginInput(req.body)
   if (!isValid) {
-    return res.status(400).json(errors);
+    return res.status(205).json(errors)
   }
-
+  const validPass = await bcrypt.compare(req.body.password, user.password)
   mysqlConnection.query(
     "SELECT * FROM user WHERE email = ?",
     [req.body.email],
     (err, rows, fields) => {
       rows.length ? (user = rows[0]) : (user = {});
+      if (!user.email) {
+        errors.message = "Email does not exists"
+        return res.status(204).json(errors)
+      }
+      if (!validPass) {
+        errors.message = "Password is Invalid"
+        return res.status(203).json(errors)
+      }
+    
+      if (user.status == 0) {
+        errors.message = "Pending Status"
+        return res.status(201).json(error)
+      } else if (user.status == 2) {
+        errors.message = "Restricted Status"
+        return res.status(202).json(error)
+      }
+      const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET)
+      let resetPassword = false
+      res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true })
+      mysqlConnection.query(
+        "SELECT last_logged_in from  user WHERE email = ?",
+        [req.body.email],
+        (err, rows, fields) => {
+          if(rows.length) resetPassword = false;
+          else resetPassword = true;
+          mysqlConnection.query(
+            "UPDATE user SET last_logged_in = ? WHERE email = ?",
+            [new Date().valueOff, req.body.email],
+            (err, rows, fields) => {
+              if(err == null) {
+                const payload = {
+                  token: token,
+                  role: user.role,
+                  user: user.last_name,
+                  resetPassword: resetPassword
+                } 
+                return res.status(200).json(payload)
+              } else {
+                return res.status(205).json(errors)
+              }
+            }
+          )
+        }
+      )     
     }
   );
-
-  const sleep = (waitTimeInMs) =>
-    new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
-  await sleep(1000);
-
-  if (!user.email) {
-    errors.logemail = "Email does not exists";
-    return res.status(400).json(errors);
-  }
-
-  const validPass = await bcrypt.compare(req.body.password, user.password);
-  if (!validPass) {
-    errors.logpassword = "Password is Invalid";
-    return res.status(400).json(errors);
-  }
-
-  const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-
-  const payload = {
-    token: token,
-    role: user.role,
-    user: user.last_name,
-  };
-
-  res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });
-  return res.json(payload);
 });
 
 module.exports = router;
