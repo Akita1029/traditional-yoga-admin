@@ -117,7 +117,7 @@ router.post("/forgetPassword", async (req, res) => {
     (err, rows, fields) => {
       rows.length ? (user = rows[0]) : (not_registered = true)
       if(not_registered){
-        return res.status(204).json({message: "not_registered"})
+        return res.status(204).json('not_registered')
       } else {
         const token = crypto.randomBytes(20).toString('hex')
         mysqlConnection.query(
@@ -213,7 +213,7 @@ router.post("/login", async (req, res) => {
   if (!isValid) {
     return res.status(205).json(errors)
   }
-  const validPass = await bcrypt.compare(req.body.password, user.password)
+
   mysqlConnection.query(
     "SELECT * FROM user WHERE email = ?",
     [req.body.email],
@@ -223,46 +223,49 @@ router.post("/login", async (req, res) => {
         errors.message = "Email does not exists"
         return res.status(204).json(errors)
       }
-      if (!validPass) {
-        errors.message = "Password is Invalid"
-        return res.status(203).json(errors)
-      }
-
-      if (user.status == 0) {
-        errors.message = "Pending Status"
-        return res.status(201).json(error)
-      } else if (user.status == 2) {
-        errors.message = "Restricted Status"
-        return res.status(202).json(error)
-      }
-      const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET)
-      let resetPassword = false
-      res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true })
-      mysqlConnection.query(
-        "SELECT last_logged_in from  user WHERE email = ?",
-        [req.body.email],
-        (err, rows, fields) => {
-          if(rows.length) resetPassword = false;
-          else resetPassword = true;
-          mysqlConnection.query(
-            "UPDATE user SET last_logged_in = ? WHERE email = ?",
-            [new Date().valueOff, req.body.email],
-            (err, rows, fields) => {
-              if(err == null) {
-                const payload = {
-                  token: token,
-                  role: user.role,
-                  user: user.last_name,
-                  resetPassword: resetPassword
-                }
-                return res.status(200).json(payload)
-              } else {
-                return res.status(205).json(errors)
-              }
-            }
-          )
+      bcrypt.compare(req.body.password, user.hash, function(err, result) {
+        console.log(req.body.password, user.hash, err, result)
+        if (err || !result) {
+          errors.message = "Password is Invalid"
+          return res.status(203).json(errors)
         }
-      )
+
+        if (user.status == 0) {
+          errors.message = "Pending Status"
+          return res.status(201).json(error)
+        } else if (user.status == 2) {
+          errors.message = "Restricted Status"
+          return res.status(202).json(error)
+        }
+        const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET)
+        let resetPassword = false
+        res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true })
+        mysqlConnection.query(
+          "SELECT last_logged_in from  user WHERE email = ?",
+          [req.body.email],
+          (err, rows, fields) => {
+            if(rows.length) resetPassword = false;
+            else resetPassword = true;
+            mysqlConnection.query(
+              "UPDATE user SET last_logged_in = ? WHERE email = ?",
+              [new Date().valueOff, req.body.email],
+              (err, rows, fields) => {
+                if(err == null) {
+                  const payload = {
+                    token: token,
+                    role: user.role,
+                    user: user.last_name,
+                    resetPassword: resetPassword
+                  }
+                  return res.status(200).json(payload)
+                } else {
+                  return res.status(205).json(errors)
+                }
+              }
+            )
+          }
+        )
+      })
     }
   );
 });
