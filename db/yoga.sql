@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 22/01/2023 00:13:22
+ Date: 22/01/2023 02:47:33
 */
 
 SET NAMES utf8mb4;
@@ -154,6 +154,8 @@ CREATE TABLE `coursemembers`  (
 -- ----------------------------
 -- Records of coursemembers
 -- ----------------------------
+INSERT INTO `coursemembers` VALUES (1, 6);
+INSERT INTO `coursemembers` VALUES (2, 6);
 
 -- ----------------------------
 -- Table structure for courseprogress
@@ -339,11 +341,12 @@ CREATE TABLE `student`  (
   `status` int NULL DEFAULT NULL,
   `can_attend_course` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of student
 -- ----------------------------
+INSERT INTO `student` VALUES (6, 37, 'google', 'I have 10 years yoga experience', 'a', 'a', 'a', 'a', 'a', 'a', 2, 1);
 
 -- ----------------------------
 -- Table structure for testuser
