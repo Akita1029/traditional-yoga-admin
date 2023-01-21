@@ -20,17 +20,35 @@ router.post("/alldata", async (req, res) => {
   })
 })
 
+// Update user profile
+router.put("/updateProfile", async (req, res) => {
+  const { email, firstname, lastname, nickname, whatsapp, country } = req.body
+  mysqlConnection.query(
+    "UPDATE user SET first_name = ?, last_name = ?, nick_name = ?, whatsapp_phonenumber = ?, country = ? " +
+    " WHERE email = ?",
+    [firstname, lastname, nickname, whatsapp, country, email],
+    (err, rows, fields) => {
+      if(err){
+        return res.status(201).json('update_fail')
+      } else {
+        return res.status(200).json('success')
+      }
+    }
+  )
+})
 
 //Register User
 router.post("/signup", async (req, res) => {
   //salting
+  const { email, password, firstname, lastname } = req.body
   const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(req.body.password, salt)
+  const hashedPassword = await bcrypt.hash(password, salt)
   let errors = {
     email: 'none',
     message: ''
   }
   let role = 4 // 0: Admin, 1: Chief, 2: Mentor, 3: Student, 4: Guest
+
   mysqlConnection.query(
     "SELECT * FROM user WHERE id > 0",
     [],
@@ -41,11 +59,11 @@ router.post("/signup", async (req, res) => {
           "INSERT INTO user (email, hash, password, first_name, last_name, role,status, last_logged_in) " +
             " VALUES (?,?,?,?,?,?,?)",
           [
-            req.body.email,
+            email,
             hashedPassword,
-            req.body.password,
-            req.body.firstName,
-            req.body.lastName,
+            password,
+            firstname,
+            lastname,
             role,
             1,
             new Date().valueOff
@@ -68,7 +86,7 @@ router.post("/signup", async (req, res) => {
       } else if(role != 0) {
         mysqlConnection.query(
           "SELECT * FROM user WHERE email = ?",
-          [req.body.email],
+          [email],
           (err, rows, fields) => {
             rows.length > 0 ? (errors.email = "exists") : (errors.email = "none")
             if (errors.email == "none") {
@@ -76,11 +94,11 @@ router.post("/signup", async (req, res) => {
                 "INSERT INTO user (email, hash, password, first_name, last_name, role, status) " +
                   " VALUES (?,?,?,?,?,?,?)",
                 [
-                  req.body.email,
+                  email,
                   hashedPassword,
-                  req.body.password,
-                  req.body.firstName,
-                  req.body.lastName,
+                  password,
+                  firstname,
+                  lastname,
                   role,
                   0
                 ],
@@ -251,17 +269,17 @@ router.post("/login", async (req, res) => {
           "SELECT last_logged_in from  user WHERE email = ?",
           [req.body.email],
           (err, rows, fields) => {
-            if(rows.length) resetPassword = false;
+            if(rows.length > 0) resetPassword = false;
             else resetPassword = true;
             mysqlConnection.query(
               "UPDATE user SET last_logged_in = ? WHERE email = ?",
-              [new Date().valueOff, req.body.email],
+              [moment(new Date()).format("YYYY-MM-DD hh:mm:ss"), req.body.email],
               (err, rows, fields) => {
                 if(err == null) {
                   const payload = {
                     token: token,
                     role: user.role,
-                    user: user.last_name,
+                    user: user,
                     resetPassword: resetPassword
                   }
                   return res.status(200).json(payload)
