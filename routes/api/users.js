@@ -117,6 +117,7 @@ router.post("/forgetPassword", async (req, res) => {
     (err, rows, fields) => {
       rows.length ? (user = rows[0]) : (not_registered = true)
       if(not_registered){
+        console.log('not registered!')
         return res.status(204).json('not_registered')
       } else {
         const token = crypto.randomBytes(20).toString('hex')
@@ -124,7 +125,10 @@ router.post("/forgetPassword", async (req, res) => {
           "UPDATE user SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?",
           [token, Date.now() + 360000, email],
           (err, rows, fields) => {
-            if(err) return res.status(203).json({message: "update fail"})
+            if(err) {
+              console.log('update fail')
+              return res.status(203).json({message: "update fail"})
+            }
             const transporter = nodemailer.createTransport({
               service: 'gmail',
               auth: {
