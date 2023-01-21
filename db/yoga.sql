@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 21/01/2023 19:41:11
+ Date: 22/01/2023 00:13:22
 */
 
 SET NAMES utf8mb4;
@@ -361,6 +361,27 @@ CREATE TABLE `testuser`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for unit
+-- ----------------------------
+DROP TABLE IF EXISTS `unit`;
+CREATE TABLE `unit`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `section_id` int NULL DEFAULT NULL,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `is_free` tinyint NULL DEFAULT NULL,
+  `duration` int NULL DEFAULT NULL,
+  `duration_param` int NULL DEFAULT NULL,
+  `forum` int NULL DEFAULT NULL,
+  `attachments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of unit
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -391,12 +412,17 @@ CREATE TABLE `user`  (
   `resetPasswordToken` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `resetPasswordExpires` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (34, 'laihunter911@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$FlTBdpR1JKi.Jo9ucZp0guZ7ilVHNrcoebpnISpTLBeCCDnbr.XQO', 1, NULL, NULL);
-INSERT INTO `user` VALUES (35, 'darbinyan.dev@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, '$2a$10$UTKUAT5mcm0RPNxUYIgv8uz8svFiMwQzZsnSQNCjrzPtsXvJhBZNG', 1, '24505973a8356d9b177f69285f3ac60f2c7c8a0e', NULL);
+INSERT INTO `user` VALUES (34, 'laihunter911@gmail.com', 'asdf', 'ChauKoi', 'Lai', 'LaiHunter', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$FlTBdpR1JKi.Jo9ucZp0guZ7ilVHNrcoebpnISpTLBeCCDnbr.XQO', 1, NULL, NULL);
+INSERT INTO `user` VALUES (35, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2023-01-21 07:03:08', '$2a$10$UTKUAT5mcm0RPNxUYIgv8uz8svFiMwQzZsnSQNCjrzPtsXvJhBZNG', 1, NULL, NULL);
+INSERT INTO `user` VALUES (36, 'bnicola1023@gmail.com', 'asdf', 'Bogdan', 'Nicola', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2023-01-21 07:03:30', '$2a$10$ai5U4g1D7ROsyWOKG7fWHeKXdZTKoXfm3Ov0azgpkTJU7Fvwtxgsi', 1, NULL, NULL);
+INSERT INTO `user` VALUES (37, 'jeremykh1028@gmail.com', 'asdf', 'Jeremy', 'Khan', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, '2023-01-21 07:06:29', '$2a$10$pbl0KbN8p5gMneJKcjm7MOHuTzpmgU0dMk3B7e4iuSfQqNb0XUs8a', 1, NULL, NULL);
+INSERT INTO `user` VALUES (38, 'dmitroloparan@gmail.com', 'asdf', 'Dmitro', 'Loparan', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, NULL, '$2a$10$6lHi2wDz/ddz3VyYtMqgu.uBx88qGyeLsGs2qi4aq97RcFfJ3Ti/a', 1, NULL, NULL);
+INSERT INTO `user` VALUES (39, 'islerheiri@gmail.com', 'asdf', 'Isler', 'Heiri', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, NULL, '$2a$10$yPRmPy20.JIEELZy2wuy0OfswzkI7WJw.MeTsDUD.IIJrFZrMiMx6', 0, NULL, NULL);
+INSERT INTO `user` VALUES (40, 'danil.petrenko.dev@gmail.com', 'asdf', 'Danylo', 'Petrenko', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, NULL, '$2a$10$dSgyvQPWbHWGWBt6R4BYjejFqizER9RQM7QJ6Vzv0RAZeCEEJ/R06', 0, NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
