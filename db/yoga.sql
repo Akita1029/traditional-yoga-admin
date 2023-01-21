@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 21/01/2023 19:39:50
+ Date: 21/01/2023 19:41:11
 */
 
 SET NAMES utf8mb4;
@@ -397,6 +397,6 @@ CREATE TABLE `user`  (
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES (34, 'laihunter911@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$FlTBdpR1JKi.Jo9ucZp0guZ7ilVHNrcoebpnISpTLBeCCDnbr.XQO', 1, NULL, NULL);
-INSERT INTO `user` VALUES (35, 'darbinyan.dev@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, '$2a$10$UTKUAT5mcm0RPNxUYIgv8uz8svFiMwQzZsnSQNCjrzPtsXvJhBZNG', 1, '24505973a8356d9b177f69285f3ac60f2c7c8a0e', '0000-00-00 00:00:00');
+INSERT INTO `user` VALUES (35, 'darbinyan.dev@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, '$2a$10$UTKUAT5mcm0RPNxUYIgv8uz8svFiMwQzZsnSQNCjrzPtsXvJhBZNG', 1, '24505973a8356d9b177f69285f3ac60f2c7c8a0e', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
