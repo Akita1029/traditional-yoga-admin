@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs")
 const mysqlConnection = require("../../config/config")
 const jwt = require("jsonwebtoken")
 const verify = require("../../verify/verifyToken")
+const moment = require("moment")
 
 // Load Input Validation
 const validateRegisterInput = require("../../validation/register")
@@ -121,7 +122,7 @@ router.post("/forgetPassword", async (req, res) => {
         return res.status(204).json('not_registered')
       } else {
         const token = crypto.randomBytes(20).toString('hex')
-        const expires = new Date().valueOf() + 360000
+        const expires = moment(Date.now()).add(1, 'hours').format("YYYY-MM-DD hh:mm:ss")
         console.log(token, expires, email)
         mysqlConnection.query(
           "UPDATE user SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?",
