@@ -1,6 +1,47 @@
+const { resolveSoa } = require("dns");
 const express = require("express");
 const router = express.Router();
 const mysqlConnection = require("../../config/config");
+
+
+
+router.post("/getUserPastPractice", (req, res) => {
+  const { email } = req.body
+  console.log("Email:", email)
+  mysqlConnection.query(
+    " SELECT student.past_yoga_experience FROM user " +
+    " JOIN student ON (user.id = student.user_id) " +
+    " WHERE user.email = ?",
+    [email],
+    (err, rows, fields) => {
+      if(rows.length > 0) {
+        pastPractice = rows[0].past_yoga_experience
+        return res.status(200).json({pastPractice: pastPractice})
+      } else {
+        return res.status(201).json({pastPractice: 'No Result'})
+      }
+    }
+  )
+})
+
+router.post("/getUserCertificates", (req, res) => {
+
+})
+
+router.post("/getUserApplicationForm", (req, res) => {
+  const { email } = req.body
+  // mysqlConnection.query(
+  //   "",
+  //   [],
+  //   (err, rows, fields) => {
+  //     if(rows.length > 0){
+
+  //     } else {
+  //       return res.status(201).json({appForms: []})
+  //     }
+  //   }
+  // )
+})
 
 router.post("/add", (req, res) => {
   mysqlConnection.query(

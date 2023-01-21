@@ -33,8 +33,28 @@ router.post("/add", (req, res) => {
   //   );
   const newCourse = req.body;
   mysqlConnection.query("INSERT INTO course set ?", [newCourse]);
-});
+})
 
+router.post("/getUserCourses", (req, res) => {
+  const { email } = req.body
+  mysqlConnection.query(
+    "SELECT course.title, course.detail_content, course.instructor_photo FROM user " +
+    "JOIN student ON (user.id = student.user_id) " +
+    "JOIN coursemembers ON (student.id = coursemembers.student_id) " +
+    "JOIN course ON (coursemembers.course_id = course.id) " +
+    "WHERE user.email = ?",
+    [email],
+    (err, rows, fields) => {
+      console.log(rows)
+      if(rows.length > 0){
+        return res.status(200).json({courses: rows})
+      } else {
+        return res.status(201).json({courses: []})
+      }
+    }
+
+  )
+})
 router.post("/edit", (req, res) => {
   //   mysqlConnection.query(
   //     "UPDATE student set hear_about_us = ?, past_yoga_experience = ?, course_outline = ?, course_ethos = ?, course_disciplne = ?, vedic_nutraceutical = ?, discipline_acknowledgement = ?, contact_detail = ? WHERE id= ?",
