@@ -122,7 +122,7 @@ router.post("/forgetPassword", async (req, res) => {
       } else {
         const token = crypto.randomBytes(20).toString('hex')
         const expires = new Date().valueOf() + 360000
-        console.log(expires)
+        console.log(token, expires, email)
         mysqlConnection.query(
           "UPDATE user SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?",
           [token, expires, email],
