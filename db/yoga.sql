@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost_3306
+ Source Server         : 10.10.15.161_3306
  Source Server Type    : MySQL
  Source Server Version : 100424
- Source Host           : localhost:3306
+ Source Host           : 10.10.15.161:3306
  Source Schema         : yoga
 
  Target Server Type    : MySQL
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 20/01/2023 20:45:17
+ Date: 21/01/2023 19:41:11
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `assignment`  (
   `attachment_type` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `accachment_size` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of assignment
@@ -52,7 +52,7 @@ CREATE TABLE `certificationtemplate`  (
   `certificate_width` int NULL DEFAULT NULL,
   `certificate_height` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of certificationtemplate
@@ -101,7 +101,7 @@ CREATE TABLE `course`  (
   `course_completion_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `is_free` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of course
@@ -118,7 +118,7 @@ DROP TABLE IF EXISTS `courseassignment`;
 CREATE TABLE `courseassignment`  (
   `course_id` int NULL DEFAULT NULL,
   `assignment_id` int NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of courseassignment
@@ -136,7 +136,7 @@ CREATE TABLE `coursecategory`  (
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `display_order` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coursecategory
@@ -149,7 +149,7 @@ DROP TABLE IF EXISTS `coursemembers`;
 CREATE TABLE `coursemembers`  (
   `course_id` int NULL DEFAULT NULL,
   `student_id` int NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coursemembers
@@ -163,7 +163,7 @@ CREATE TABLE `courseprogress`  (
   `unit_id` int NULL DEFAULT NULL,
   `student_id` int NULL DEFAULT NULL,
   `done` tinyint(1) NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of courseprogress
@@ -176,7 +176,7 @@ DROP TABLE IF EXISTS `coursequiz`;
 CREATE TABLE `coursequiz`  (
   `course_id` int NULL DEFAULT NULL,
   `quiz_id` int NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of coursequiz
@@ -193,7 +193,7 @@ CREATE TABLE `family`  (
   `name` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `phone_number` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of family
@@ -209,7 +209,7 @@ CREATE TABLE `mentor`  (
   `chief_id` int NULL DEFAULT NULL,
   `active` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mentor
@@ -222,7 +222,7 @@ DROP TABLE IF EXISTS `mentormembers`;
 CREATE TABLE `mentormembers`  (
   `student_id` int NULL DEFAULT NULL,
   `mentor_id` int NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mentormembers
@@ -241,7 +241,7 @@ CREATE TABLE `query`  (
   `country` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `message` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of query
@@ -261,7 +261,7 @@ CREATE TABLE `question`  (
   `answer_hint` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `answer_explantion` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of question
@@ -286,7 +286,7 @@ CREATE TABLE `quiz`  (
   `dynamic_quiz` tinyint(1) NULL DEFAULT NULL,
   `random_questions` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of quiz
@@ -299,7 +299,7 @@ DROP TABLE IF EXISTS `quizquestions`;
 CREATE TABLE `quizquestions`  (
   `quiz_id` int NULL DEFAULT NULL,
   `question_id` int NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of quizquestions
@@ -315,7 +315,7 @@ CREATE TABLE `section`  (
   `order` int NULL DEFAULT NULL,
   `course_id` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of section
@@ -339,7 +339,7 @@ CREATE TABLE `student`  (
   `status` int NULL DEFAULT NULL,
   `can_attend_course` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of student
@@ -354,7 +354,7 @@ CREATE TABLE `testuser`  (
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of testuser
@@ -387,13 +387,16 @@ CREATE TABLE `user`  (
   `role` int NULL DEFAULT NULL,
   `last_logged_in` timestamp NULL DEFAULT NULL,
   `hash` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
-  `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `status` int NULL DEFAULT NULL,
+  `resetPasswordToken` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `resetPasswordExpires` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (34, 'laihunter911@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$FlTBdpR1JKi.Jo9ucZp0guZ7ilVHNrcoebpnISpTLBeCCDnbr.XQO', '1');
+INSERT INTO `user` VALUES (34, 'laihunter911@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$FlTBdpR1JKi.Jo9ucZp0guZ7ilVHNrcoebpnISpTLBeCCDnbr.XQO', 1, NULL, NULL);
+INSERT INTO `user` VALUES (35, 'darbinyan.dev@gmail.com', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, '$2a$10$UTKUAT5mcm0RPNxUYIgv8uz8svFiMwQzZsnSQNCjrzPtsXvJhBZNG', 1, '24505973a8356d9b177f69285f3ac60f2c7c8a0e', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
