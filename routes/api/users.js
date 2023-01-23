@@ -238,12 +238,12 @@ router.post("/login", async (req, res) => {
   if (!isValid) {
     return res.status(205).json(errors)
   }
-
+  console.log("Email:", req.body.email)
   mysqlConnection.query(
     "SELECT * FROM user WHERE email = ?",
     [req.body.email],
     (err, rows, fields) => {
-      rows.length ? (user = rows[0]) : (user = {})
+      rows !== undefined && rows.length > 0? (user = rows[0]) : (user = {})
       if (!user.email) {
         errors.message = "Email does not exists"
         return res.status(204).json(errors)
@@ -257,10 +257,10 @@ router.post("/login", async (req, res) => {
 
         if (user.status == 0) {
           errors.message = "Pending Status"
-          return res.status(201).json(error)
+          return res.status(201).json(errors)
         } else if (user.status == 2) {
           errors.message = "Restricted Status"
-          return res.status(202).json(error)
+          return res.status(202).json(errors)
         }
         const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET)
         let resetPassword = false
