@@ -238,13 +238,12 @@ router.post("/login", async (req, res) => {
   if (!isValid) {
     return res.status(205).json(errors)
   }
-
+  console.log("Email:", req.body.email)
   mysqlConnection.query(
     "SELECT * FROM user WHERE email = ?",
     [req.body.email],
     (err, rows, fields) => {
-      if(!err || rows == undefined) return res.status(205).json(err)
-      rows.length ? (user = rows[0]) : (user = {})
+      rows !== undefined && rows.length > 0? (user = rows[0]) : (user = {})
       if (!user.email) {
         errors.message = "Email does not exists"
         return res.status(204).json(errors)
