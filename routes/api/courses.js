@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const mysqlConnection = require("../../config/config");
-
+const moment = require("moment")
 router.get("/alldata", async (req, res) => {
   mysqlConnection.query("Select * from course", (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
   });
 });
 
-router.get("/load_online_courses", async (req, res) => {
+router.post("/load_online_courses", async (req, res) => {
   mysqlConnection.query("Select * from course Where is_free = 1", (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
-  });
-});
+  })
+})
 
 router.post("/add", (req, res) => {
   //   mysqlConnection.query(
@@ -101,11 +101,11 @@ router.post("/delete", (req, res) => {
 // Take Course
 router.post("/takecourse", async (req, res) => {
   let errors = ""
-
+  console.log(req.body)
   const { email, firstName, lastName, nickName, ryit_cert, birthdate, gender, whatsapp,
     language, occupation, education, country, address1, address2, state, city, zipcode,
     relationship, familycontacts, hearfrom, pastpractice, courseoutline, courseethostext,
-    coursediscipline, communication, vedic, codediscipline, contactdetails } = req.body
+    coursediscipline, communication, vedic, codediscipline, contactdetails } = req.body.regData
 
   mysqlConnection.query(
     "SELECT * FROM user WHERE email = ? or whatsapp_phonenumber = ?",
@@ -176,7 +176,7 @@ router.post("/takecourse", async (req, res) => {
         mysqlConnection.query(
           "INSERT INTO user (email, first_name, last_name, nick_name, ryit_cert, birthday," +
             "whatsapp_phonenumber, gender, language, profession, education_detail, country," +
-            " street_address, address_line_2, city, province, zip_code ) VALUES "
+            " street_address, address_line_2, city, province, zip_code, role ) VALUES "
             + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             email, firstName, lastName, nickName,
@@ -185,16 +185,17 @@ router.post("/takecourse", async (req, res) => {
             whatsapp,
             gender == "female" ? 0 : 1,
             language, occupation, education, country, address1, address2,
-            city, state, zipcode
+            city, state, zipcode, 4
           ],
           (err, rows, fields) => {
             if(!err) {
+              user_id = rows.insertId
               mysqlConnection.query(
                 "INSERT INTO student(user_id, hear_about_us, past_yoga_experience, " +
                 " course_outline, course_ethos, course_discipline, vedic_nutraceutical, " +
                 " discipline_acknowledgement, contact_detail, status) " +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [user.id, hearfrom, pastpractice, courseoutline, courseethostext, coursediscipline,
+                [user_id, hearfrom, pastpractice, courseoutline, courseethostext, coursediscipline,
                 vedic, codediscipline, contactdetails, 0],
                 (err, rows, fields) => {
                   if(!err){
@@ -202,20 +203,25 @@ router.post("/takecourse", async (req, res) => {
                     mysqlConnection.query(
                       "INSERT INTO family(student_id, relation, name, phone_number) " +
                       " VALUES(?, ?, ?, ?)",
-                      [student_id, relationship, user.name, familycontacts],
+                      [student_id, relationship, firstName+" "+lastName, familycontacts],
                       (err, rows, fields) => {
                         if(!err)
                           return res.status(201).send({message: "success"})
-                        else
+                        else{
+                          console.log(err)
                           return res.status(404).send({message: "family_insert_fail"})
+                        }
+
                       }
                     )
                   } else {
+                    console.log(err)
                     return res.status(405).send({message: "student_insert_fail"})
                   }
                 }
               )
             } else {
+              console.log(err)
               return res.status(406).send({message: "user_insert_fail"})
             }
           }
