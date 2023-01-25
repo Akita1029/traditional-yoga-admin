@@ -3,6 +3,26 @@ const router = express.Router();
 const mysqlConnection = require("../../config/config");
 const moment = require("moment")
 
+router.post("/create", async (req, res) => {
+  mysqlConnection.query(
+    "INSERT INTO course * VALUES ?",
+    [
+      req.body
+    ],
+    (err, rows, fields) => {
+      console.log(err)
+      console.log(rows)
+      console.log(fields)
+      if(err == null) {
+        return res.status(201).json({message: "success"})
+      }
+      else {
+        return res.status(204).json({message: "insert_fail"})
+      }
+    }
+  )
+});
+
 router.get("/alldata", async (req, res) => {
   mysqlConnection.query("Select * from course", (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
@@ -16,29 +36,86 @@ router.post("/load_online_courses", async (req, res) => {
 })
 
 router.post("/get_live_classrooms", async (req, res) => {
-  mysqlConnection.query("Select * from classrooms Where status = 1 order by created_at desc", (err, rows, fields) => {
+  mysqlConnection.query(
+    "SELECT C.id AS classId, C.name AS name, C.description AS description, C.place AS place, C.photo AS photo, " +
+    " C.members AS members, C.status AS status, " +
+    " CONCAT_WS(' ', U.first_name, U.last_name) AS mentor, " +
+    " U.whatsapp_phonenumber AS mentor_phonenumber, " +
+    " CONCAT_WS(' ', U.street_address, U.address_line_2, U.city, U.province, U.country, U.zip_code) AS mentor_address " +
+    " FROM classrooms AS C " +
+    " JOIN mentor AS M ON(M.id = C.mentor_id) " +
+    " JOIN user AS U ON (U.id = M.user_id) WHERE C.status = 1 " +
+    " ORDER BY C.created_at DESC"
+    ,
+    (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
   })
 })
 
 router.post("/get_one_classroom", async (req, res) => {
   if(req.body.classId == undefined) {
-    mysqlConnection.query("Select * from classrooms Where status = 1 order by created_at desc", (err, rows, fields) => {
+    mysqlConnection.query(
+      "SELECT C.id AS classId, C.name AS name, C.description AS description, C.place AS place, C.photo AS photo, " +
+      " C.members AS members, C.status AS status, " +
+      " CONCAT_WS(' ', U.first_name, U.last_name) AS mentor, " +
+      " U.whatsapp_phonenumber AS mentor_phonenumber, " +
+      " CONCAT_WS(' ', U.street_address, U.address_line_2, U.city, U.province, U.country, U.zip_code) AS mentor_address " +
+      " FROM classrooms AS C " +
+      " JOIN mentor AS M ON(M.id = C.mentor_id) " +
+      " JOIN user AS U ON (U.id = M.user_id) WHERE C.status = 1 " +
+      " ORDER BY C.created_at DESC"
+      , (err, rows, fields) => {
       !err ? res.json(rows[0]) : console.log(err);
     })
   } else {
-    mysqlConnection.query("Select * from classrooms Where id = ?", [req.body.classId], (err, rows, fields) => {
-      !err ? res.json(rows[0]) : console.log(err);
+    mysqlConnection.query(
+      "SELECT C.id AS classId, C.name AS name, C.description AS description, C.place AS place, C.photo AS photo, " +
+      " C.members AS members, C.status AS status, " +
+      " CONCAT_WS(' ', U.first_name, U.last_name) AS mentor, " +
+      " U.whatsapp_phonenumber AS mentor_phonenumber, " +
+      " CONCAT_WS(' ', U.street_address, U.address_line_2, U.city, U.province, U.country, U.zip_code) AS mentor_address " +
+      " FROM classrooms AS C " +
+      " JOIN mentor AS M ON(M.id = C.mentor_id) " +
+      " JOIN user AS U ON (U.id = M.user_id) WHERE C.id = ? " +
+      " ORDER BY C.created_at DESC"
+      , [req.body.classId], (err, rows, fields) => {
+        !err ? res.json(rows[0]) : console.log(err);
     })
   }
 })
 
 router.post("/join_to_classroom", async (req, res) => {
-  const { classId, email } = req.body
-  return res.status(200).json('success')
-  // mysqlConnection.query("Select * from classrooms Where id = ?", [req.body.classId], (err, rows, fields) => {
-  //   !err ? res.json(rows[0]) : console.log(err);
-  // })
+  const { classId, userId } = req.body
+  mysqlConnection.query(
+    "SELECT * FROM classmembers WHERE classId = ? and userId = ?",
+    [classId, userId],
+    (err, rows, fields) => {
+      if(rows.length > 0){
+        return res.status(201).json('already_exists')
+      } else {
+        mysqlConnection.query(
+          "INSERT INTO classmembers(classId, userId) VALUES (?, ?)",
+          [classId, userId],
+          (err, rows, fields) => {
+            if(!err){
+              mysqlConnection.query(
+                "UPDATE classrooms SET members = members + 1 WHERE id = ?",
+                [classId],
+                (err, rows, fields) => {
+                  if(!err){
+                    return res.status(200).json('success')
+                  } else {
+                    return res.status(501).json('join_update_fail')
+                  }
+                }
+              )
+            } else {
+              return res.status(500).json('join_fail')
+            }
+          }
+        )
+      }
+    })
 })
 
 router.post("/add", (req, res) => {
