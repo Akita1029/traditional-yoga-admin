@@ -21,6 +21,26 @@ router.post("/get_live_classrooms", async (req, res) => {
   })
 })
 
+router.post("/get_one_classroom", async (req, res) => {
+  if(req.body.classId == undefined) {
+    mysqlConnection.query("Select * from classrooms Where status = 1 order by created_at desc", (err, rows, fields) => {
+      !err ? res.json(rows[0]) : console.log(err);
+    })
+  } else {
+    mysqlConnection.query("Select * from classrooms Where id = ?", [req.body.classId], (err, rows, fields) => {
+      !err ? res.json(rows[0]) : console.log(err);
+    })
+  }
+})
+
+router.post("/join_to_classroom", async (req, res) => {
+  const { classId, email } = req.body
+  return res.status(200).json('success')
+  // mysqlConnection.query("Select * from classrooms Where id = ?", [req.body.classId], (err, rows, fields) => {
+  //   !err ? res.json(rows[0]) : console.log(err);
+  // })
+})
+
 router.post("/add", (req, res) => {
   //   mysqlConnection.query(
   //     "INSERT INTO course (title, detail_content, category, instructor_name, instructor_photo, duration, duration_param, student_number, completion_lock, offline_course, show_unit_content_in_curriculumn, hide_course_button_after_subscription, display_course_progress_on_course_home, time_based_corse_progress, post_course_reviews_from_course_home, auto_evaluation, start_date, max_student_number, excellence_badge, badge_percent, badge_title, completion_certificate, certificate_template, passing_percentage, drip_feed, course_starting_time_as_drip_feed_origin, section-drip_feed, drip_duration_as_unit_duration, drip_feed_duration, drip_feed_duration_param, prerequisite_course, course_retakes, course_forum, course_specific_instructions, course_completion_msg, is_free) VALUES (?,?,?,?,?,?,?,?)",
