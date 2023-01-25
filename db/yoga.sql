@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 24/01/2023 13:42:04
+ Date: 25/01/2023 03:01:35
 */
 
 SET NAMES utf8mb4;
@@ -57,6 +57,30 @@ CREATE TABLE `certificationtemplate`  (
 -- ----------------------------
 -- Records of certificationtemplate
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for classrooms
+-- ----------------------------
+DROP TABLE IF EXISTS `classrooms`;
+CREATE TABLE `classrooms`  (
+  `id` int NOT NULL,
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `course_id` int NULL DEFAULT NULL,
+  `mentor_id` int NULL DEFAULT NULL,
+  `place` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `status` int NULL DEFAULT NULL,
+  `members` int NULL DEFAULT NULL,
+  `photo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of classrooms
+-- ----------------------------
+INSERT INTO `classrooms` VALUES (1, 'Class1', 'FirstClass', 1, 1, 'India', 1, 300, 'bck2.jpg', '2023-01-23 02:04:14');
+INSERT INTO `classrooms` VALUES (2, 'Class2', 'SecondClass', 2, 1, 'India', 1, 100, 'bck2 (1).jpg', '2023-01-25 02:05:00');
 
 -- ----------------------------
 -- Table structure for course
@@ -311,6 +335,23 @@ CREATE TABLE `quizquestions`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for reviews
+-- ----------------------------
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE `reviews`  (
+  `id` int NOT NULL,
+  `class_id` int NULL DEFAULT NULL,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `review` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `rating` float NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of reviews
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for section
 -- ----------------------------
 DROP TABLE IF EXISTS `section`;
@@ -343,14 +384,15 @@ CREATE TABLE `student`  (
   `contact_detail` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `status` int NULL DEFAULT NULL,
   `can_attend_course` tinyint(1) NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL);
-INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL);
+INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 14:38:12');
+INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17');
 
 -- ----------------------------
 -- Table structure for testuser
@@ -418,16 +460,17 @@ CREATE TABLE `user`  (
   `status` int NULL DEFAULT NULL,
   `resetPasswordToken` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `resetPasswordExpires` timestamp NULL DEFAULT NULL,
+  `avatar` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL);
-INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2023-01-24 09:40:43', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL);
-INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2023-01-24 09:41:37', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL);
-INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-24 09:40:18', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL);
-INSERT INTO `user` VALUES (51, 'jeremykh1028@gmail.com', NULL, 'Jeremy', 'Khan', 'Jeremy', 0, '2023-01-23', '18654659371', 1, 'en,fr', 'bachelor\'s degree in computer science', 'N/A', 'Canada', '155 Calverley trail', '', 'Toronto', 'Ontario', 'M1C 3Y4', 4, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, NULL);
+INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2023-01-24 09:43:55', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL, NULL);
+INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2023-01-24 04:10:46', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL, NULL);
+INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-24 09:30:44', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (51, 'jeremykh1028@gmail.com', NULL, 'Jeremy', 'Khan', 'Jeremy', 0, '2023-01-23', '18654659371', 1, 'en,fr', 'bachelor\'s degree in computer science', 'N/A', 'Canada', '155 Calverley trail', '', 'Toronto', 'Ontario', 'M1C 3Y4', 4, NULL, NULL, 0, NULL, NULL, 'jeremy_avatar.jpg');
 
 SET FOREIGN_KEY_CHECKS = 1;

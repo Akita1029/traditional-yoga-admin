@@ -28,6 +28,21 @@ router.post("/getUserCertificates", (req, res) => {
 
 })
 
+router.post("/getAllStudents", (req, res) => {
+  const { email } = req.body
+  mysqlConnection.query(
+    "SELECT user.*, student.* FROM student join user ON (student.user_id = user.id)",
+    [],
+    (err, rows, fields) => {
+      if(rows.length > 0) {
+        return res.status(200).json(rows)
+      } else {
+        return res.status(201).json('no_students')
+      }
+    }
+  )
+})
+
 router.post("/getUserApplicationForm", (req, res) => {
   const { email } = req.body
   // mysqlConnection.query(

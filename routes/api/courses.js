@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mysqlConnection = require("../../config/config");
 const moment = require("moment")
+
 router.get("/alldata", async (req, res) => {
   mysqlConnection.query("Select * from course", (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
@@ -10,6 +11,12 @@ router.get("/alldata", async (req, res) => {
 
 router.post("/load_online_courses", async (req, res) => {
   mysqlConnection.query("Select * from course Where is_free = 1", (err, rows, fields) => {
+    !err ? res.json(rows) : console.log(err);
+  })
+})
+
+router.post("/get_live_classrooms", async (req, res) => {
+  mysqlConnection.query("Select * from classrooms Where status = 1 order by created_at desc", (err, rows, fields) => {
     !err ? res.json(rows) : console.log(err);
   })
 })
@@ -193,10 +200,10 @@ router.post("/takecourse", async (req, res) => {
               mysqlConnection.query(
                 "INSERT INTO student(user_id, hear_about_us, past_yoga_experience, " +
                 " course_outline, course_ethos, course_discipline, vedic_nutraceutical, " +
-                " discipline_acknowledgement, contact_detail, status) " +
+                " discipline_acknowledgement, contact_detail, status, created_at) " +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [user_id, hearfrom, pastpractice, courseoutline, courseethostext, coursediscipline,
-                vedic, codediscipline, contactdetails, 0],
+                vedic, codediscipline, contactdetails, 0, moment(Date.now).format("YYYY-MM-DD hh:mm:ss")],
                 (err, rows, fields) => {
                   if(!err){
                     student_id = rows.insertId
