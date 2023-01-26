@@ -44,89 +44,115 @@ router.post("/get_live_classrooms", async (req, res) => {
     " WHERE CP.done < 100 and U.email = ?",
     [req.body.email],
     (err, rows, fields) => {
-    if(rows.length > 0){
-      classId = rows[0].unit_id
-      mysqlConnection.query(
-        "SELECT U.id as classId, U.title, U.content, U.place, U.photo, CS.id as courseId FROM unit as U " +
-        " JOIN section as ST ON (ST.id = U.section_id) " +
-        " JOIN course as CS ON (CS.id = ST.course_id) " +
-        " WHERE U.id = ?",
-        [classId],
-        (err, rows, fields) => {
-          if(rows.length > 0) {
-            title = rows[0].title
-            content = rows[0].content
-            place = rows[0].place
-            photo = rows[0].photo
-            courseId = rows[0].courseId
-            mysqlConnection.query(
-              "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as mentor, " +
-              " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as mentor_address, " +
-              " user.whatsapp_phonenumber as mentor_phonenumber FROM course " +
-              " JOIN mentor ON (course.mentor_id = mentor.id) " +
-              " JOIN user ON (mentor.user_id = user.id) " +
-              " WHERE course.id = ?",
-              [courseId],
-              (err, rows, fields) => {
-                if(rows.length > 0){
-                  mentor = rows[0].mentor
-                  mentor_phonenumber = rows[0].mentor_phonenumber
+      if(!err){
+        if(rows.length > 0){
+          classId = rows[0].unit_id
+          mysqlConnection.query(
+            "SELECT U.id as classId, U.title, U.content, U.place, U.photo, CS.id as courseId FROM unit as U " +
+            " JOIN section as ST ON (ST.id = U.section_id) " +
+            " JOIN course as CS ON (CS.id = ST.course_id) " +
+            " WHERE U.id = ?",
+            [classId],
+            (err, rows, fields) => {
+              if(!err){
+                if(rows.length > 0) {
+                  title = rows[0].title
+                  content = rows[0].content
+                  place = rows[0].place
+                  photo = rows[0].photo
+                  courseId = rows[0].courseId
                   mysqlConnection.query(
-                    "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
-                    [classId],
+                    "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as mentor, " +
+                    " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as mentor_address, " +
+                    " user.whatsapp_phonenumber as mentor_phonenumber FROM course " +
+                    " JOIN mentor ON (course.mentor_id = mentor.id) " +
+                    " JOIN user ON (mentor.user_id = user.id) " +
+                    " WHERE course.id = ?",
+                    [courseId],
                     (err, rows, fields) => {
-                      if(rows.length > 0){
-                        members = rows[0].members
-                        mysqlConnection.query(
-                          "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as chief, " +
-                          " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as chief_address, " +
-                          " user.whatsapp_phonenumber as chief_phonenumber FROM course " +
-                          " JOIN mentor ON (course.mentor_id = mentor.id) " +
-                          " JOIN user ON (mentor.chief_id = user.id) " +
-                          " WHERE course.id = ?",
-                          [courseId],
-                          (err, rows, fields) => {
-                            if(rows.length > 0) {
-                              chief = rows[0].chief
-                              chief_address = rows[0].chief_address
-                              chief_phonenumber = rows[0].chief_phonenumber
-                              const payload = {
-                                title: title,
-                                photo: photo,
-                                place: place,
-                                content: content,
-                                members: members,
-                                classId: classId,
-                                mentor: mentor,
-                                mentor_phonenumber: mentor_phonenumber,
-                                chief: chief,
-                                chief_address: chief_address,
-                                chief_phonenumber: chief_phonenumber
+                      if(!err){
+                        if(rows.length > 0){
+                          mentor = rows[0].mentor
+                          mentor_address = rows[0].mentor_address
+                          mentor_phonenumber = rows[0].mentor_phonenumber
+                          mysqlConnection.query(
+                            "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
+                            [classId],
+                            (err, rows, fields) => {
+                              if(!err) {
+                                if(rows.length > 0){
+                                  members = rows[0].members
+                                  mysqlConnection.query(
+                                    "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as chief, " +
+                                    " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as chief_address, " +
+                                    " user.whatsapp_phonenumber as chief_phonenumber FROM course " +
+                                    " JOIN mentor ON (course.mentor_id = mentor.id) " +
+                                    " JOIN user ON (mentor.chief_id = user.id) " +
+                                    " WHERE course.id = ?",
+                                    [courseId],
+                                    (err, rows, fields) => {
+                                      if(!err){
+                                        if(rows.length > 0) {
+                                          chief = rows[0].chief
+                                          chief_address = rows[0].chief_address
+                                          chief_phonenumber = rows[0].chief_phonenumber
+                                          const payload = {
+                                            title: title,
+                                            photo: photo,
+                                            place: place,
+                                            content: content,
+                                            members: members,
+                                            classId: classId,
+                                            mentor: mentor,
+                                            mentor_address: mentor_address,
+                                            mentor_phonenumber: mentor_phonenumber,
+                                            chief: chief,
+                                            chief_address: chief_address,
+                                            chief_phonenumber: chief_phonenumber
+                                          }
+                                          return res.status(200).json(payload)
+                                        } else {
+                                          return res.status(201)
+                                        }
+                                      } else {
+                                        return res.status(505)
+                                      }
+                                    }
+                                  )
+                                } else {
+                                  return res.status(201)
+                                }
+                              } else {
+                                return res.status(504)
                               }
-                              return res.status(200).json(payload)
-                            } else {
-                              return res.status(201)
                             }
-                          }
-                        )
+                          )
+                        } else {
+                          return res.status(201)
+                        }
                       } else {
-                        return res.status(201)
+                        console.log(err)
+                        return res.status(503)
                       }
+
                     }
                   )
                 } else {
                   return res.status(201)
                 }
+              } else {
+                console.log(err)
+                return res.status(502)
               }
-            )
-          } else {
-            return res.status(201)
-          }
+            }
+          )
+        } else {
+          return res.status(201)
         }
-      )
-    } else {
-      return res.status(201)
-    }
+      } else {
+        console.log(err)
+        return res.status(501)
+      }
   })
 })
 
@@ -274,12 +300,20 @@ router.post("/get_current_course", async (req, res) => {
     " WHERE C.is_free = 1 and U.id = ?",
     [userId],
     (err, rows, fields) => {
+      if(err){
+        console.log(err)
+        return res.status(501)
+      }
       if(rows.length > 0){
         course_id = rows[0].course_id
         mysqlConnection.query(
           "SELECT * FROM section WHERE course_id = ? order by section.order",
           [course_id],
           (err, rows, fields) => {
+            if(err) {
+              console.log(err)
+              return res.status(502)
+            }
             if(rows.length > 0){
               let payload = {
                 course_id: course_id,
@@ -310,6 +344,10 @@ router.post("/get_one_classroom", async (req, res) => {
       " WHERE U.id = ?",
       [classId],
       (err, rows, fields) => {
+        if(err){
+          console.log(err)
+          return res.status(501)
+        }
         if(rows.length > 0) {
           title = rows[0].title
           content = rows[0].content
@@ -325,6 +363,10 @@ router.post("/get_one_classroom", async (req, res) => {
             " WHERE course.id = ?",
             [courseId],
             (err, rows, fields) => {
+              if(err){
+                console.log(err)
+                return res.status(502)
+              }
               if(rows.length > 0){
                 mentor = rows[0].mentor
                 mentor_phonenumber = rows[0].mentor_phonenumber
@@ -332,6 +374,10 @@ router.post("/get_one_classroom", async (req, res) => {
                   "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
                   [classId],
                   (err, rows, fields) => {
+                    if(err){
+                      console.log(err)
+                      return res.status(503)
+                    }
                     if(rows.length > 0){
                       members = rows[0].members
                       const payload = {
@@ -369,6 +415,10 @@ router.post("/get_one_classroom", async (req, res) => {
       " WHERE CP.done < 100 and U.id = ?",
       [userId],
       (err, rows, fields) => {
+        if(err){
+          console.log(err)
+          return res.status(504)
+        }
         if(rows.length > 0){
           unitId = rows[0].unit_id
           mysqlConnection.query(
@@ -378,6 +428,10 @@ router.post("/get_one_classroom", async (req, res) => {
             " WHERE U.id = ?",
             [unitId],
             (err, rows, fields) => {
+              if(err){
+                console.log(err)
+                return res.status(505)
+              }
               if(rows.length > 0) {
                 title = rows[0].title
                 content = rows[0].content
@@ -393,13 +447,22 @@ router.post("/get_one_classroom", async (req, res) => {
                   " WHERE course.id = ?",
                   [courseId],
                   (err, rows, fields) => {
+                    if(err){
+                      console.log(err)
+                      return res.status(506)
+                    }
                     if(rows.length > 0){
                       mentor = rows[0].mentor
+                      mentor_address = rows[0].mentor_address
                       mentor_phonenumber = rows[0].mentor_phonenumber
                       mysqlConnection.query(
                         "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
                         [classId],
                         (err, rows, fields) => {
+                          if(err){
+                            console.log(err)
+                            return res.status(507)
+                          }
                           if(rows.length > 0){
                             members = rows[0].members
                             const payload = {
@@ -410,6 +473,7 @@ router.post("/get_one_classroom", async (req, res) => {
                               members: members,
                               classId: unitId,
                               mentor: mentor,
+                              mentor_address: mentor_address,
                               mentor_phonenumber: mentor_phonenumber
                             }
                             console.log(req.body.classId, payload)
