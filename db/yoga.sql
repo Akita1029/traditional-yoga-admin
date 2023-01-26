@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 24/01/2023 13:42:04
+ Date: 26/01/2023 15:11:24
 */
 
 SET NAMES utf8mb4;
@@ -100,16 +100,17 @@ CREATE TABLE `course`  (
   `course_specific_instructions` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `course_completion_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `is_free` tinyint(1) NULL DEFAULT NULL,
+  `mentor_id` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of course
 -- ----------------------------
-INSERT INTO `course` VALUES (1, '(RYIT 200) Free Online Traditional', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, NULL, 'Rectangle 28.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
-INSERT INTO `course` VALUES (2, '(RYIT 200asdfasdonal', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, NULL, '01_preview_large.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
-INSERT INTO `course` VALUES (3, '(Raeatrwetyrraditional', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, NULL, 'group-photo-sun-2-1-768x512-310x207.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
-INSERT INTO `course` VALUES (4, '(RYIewqrqwertqweonal', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, NULL, 'ayurveda-services-consultation.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
+INSERT INTO `course` VALUES (1, '(Raeatrwetyrraditional', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', '01_preview_large.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
+INSERT INTO `course` VALUES (2, '(RYIewqrqwertqweonal', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'image-45-copyright-min.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
+INSERT INTO `course` VALUES (3, '(Raeatrwetyrraditional', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'group-photo-sun-2-1-768x512-310x207.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
+INSERT INTO `course` VALUES (4, '(RYIewqrqwertqweonal', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'ayurveda-services-consultation.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
 
 -- ----------------------------
 -- Table structure for courseassignment
@@ -154,7 +155,8 @@ CREATE TABLE `coursemembers`  (
 -- ----------------------------
 -- Records of coursemembers
 -- ----------------------------
-INSERT INTO `coursemembers` VALUES (1, 9);
+INSERT INTO `coursemembers` VALUES (3, 9);
+INSERT INTO `coursemembers` VALUES (4, 9);
 
 -- ----------------------------
 -- Table structure for courseprogress
@@ -169,6 +171,14 @@ CREATE TABLE `courseprogress`  (
 -- ----------------------------
 -- Records of courseprogress
 -- ----------------------------
+INSERT INTO `courseprogress` VALUES (1, 9, 100);
+INSERT INTO `courseprogress` VALUES (2, 9, 30);
+INSERT INTO `courseprogress` VALUES (3, 9, 100);
+INSERT INTO `courseprogress` VALUES (1, 10, 100);
+INSERT INTO `courseprogress` VALUES (2, 10, 50);
+INSERT INTO `courseprogress` VALUES (3, 10, 100);
+INSERT INTO `courseprogress` VALUES (4, 9, 100);
+INSERT INTO `courseprogress` VALUES (4, 10, 100);
 
 -- ----------------------------
 -- Table structure for coursequiz
@@ -214,11 +224,12 @@ CREATE TABLE `mentor`  (
   `chief_id` int NULL DEFAULT NULL,
   `active` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mentor
 -- ----------------------------
+INSERT INTO `mentor` VALUES (1, 47, 48, 1);
 
 -- ----------------------------
 -- Table structure for mentormembers
@@ -311,6 +322,23 @@ CREATE TABLE `quizquestions`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for reviews
+-- ----------------------------
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE `reviews`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `class_id` int NULL DEFAULT NULL,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `review` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `rating` float NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of reviews
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for section
 -- ----------------------------
 DROP TABLE IF EXISTS `section`;
@@ -319,12 +347,15 @@ CREATE TABLE `section`  (
   `title` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `order` int NULL DEFAULT NULL,
   `course_id` int NULL DEFAULT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of section
 -- ----------------------------
+INSERT INTO `section` VALUES (1, 'Module1', 1, 3, 'This is Module1');
+INSERT INTO `section` VALUES (2, 'Module2', 2, 4, 'This is Module2');
 
 -- ----------------------------
 -- Table structure for student
@@ -343,14 +374,22 @@ CREATE TABLE `student`  (
   `contact_detail` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `status` int NULL DEFAULT NULL,
   `can_attend_course` tinyint(1) NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `mentor` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL);
-INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL);
+INSERT INTO `student` VALUES (8, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 14:38:12', 'Helo', '898989', NULL);
+INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 14:38:12', 'Loparen', '898989', NULL);
+INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Nouuse', '221553', 'id');
+INSERT INTO `student` VALUES (11, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Sophie', '221553', 'id');
+INSERT INTO `student` VALUES (12, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Joke', '221553', 'id');
+INSERT INTO `student` VALUES (13, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Hopoen', '221553', 'id');
 
 -- ----------------------------
 -- Table structure for testuser
@@ -381,12 +420,19 @@ CREATE TABLE `unit`  (
   `duration_param` int NULL DEFAULT NULL,
   `forum` int NULL DEFAULT NULL,
   `attachments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `photo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `place` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of unit
 -- ----------------------------
+INSERT INTO `unit` VALUES (1, 1, 'Unit1', 'This is first unit', 1, NULL, NULL, NULL, NULL, '2023-01-23 21:00:00', 'PY020721_MikeNader_Class4_20min.webp', 'United State');
+INSERT INTO `unit` VALUES (2, 1, 'Unit2', 'This is second unit', 1, NULL, NULL, NULL, NULL, '2023-01-24 21:00:18', 'vcvv-min.jpg', 'India');
+INSERT INTO `unit` VALUES (3, 2, 'Unit1', 'This is third unit', 1, NULL, NULL, NULL, NULL, '2023-01-25 21:00:44', 'Ramoji2-copy-1024x680.jpg', 'Nepal');
+INSERT INTO `unit` VALUES (4, 2, 'Unit2', 'This is fourth unit', 0, NULL, NULL, NULL, NULL, '2023-01-25 22:01:05', 'about2-copyright.png', 'Myanmar');
 
 -- ----------------------------
 -- Table structure for user
@@ -418,16 +464,17 @@ CREATE TABLE `user`  (
   `status` int NULL DEFAULT NULL,
   `resetPasswordToken` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `resetPasswordExpires` timestamp NULL DEFAULT NULL,
+  `avatar` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL);
-INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2023-01-24 09:40:43', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL);
-INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2023-01-24 09:41:37', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL);
-INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-24 09:40:18', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL);
-INSERT INTO `user` VALUES (51, 'jeremykh1028@gmail.com', NULL, 'Jeremy', 'Khan', 'Jeremy', 0, '2023-01-23', '18654659371', 1, 'en,fr', 'bachelor\'s degree in computer science', 'N/A', 'Canada', '155 Calverley trail', '', 'Toronto', 'Ontario', 'M1C 3Y4', 4, NULL, NULL, 0, NULL, NULL);
+INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, '19573632574', 1, 'en, hd', 'master\'s degree', 'N/A', 'United States', '710 Tina Manker Rd', ' ', 'Ridgeland', 'South Carolina', '29936', 0, '2023-01-26 02:43:53', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, '	022 2756 3377', 1, 'en,hd', 'doctor', 'N/A', 'India', 'Palm Beach Rd, Sector 15, CBD Belapur', '', 'Navi Mumbai', '	Maharashtra', '	400614', 2, '2023-01-26 02:42:55', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, '	099 47 770555', 1, 'en,hd', 'doctor', 'N/A', 'India', '	Salem - Kochi - Kanyakumari Hwy, Sreekariyam', '', '	Thiruvananthapuram', '	Kerala', '	695017', 1, '2023-01-26 02:44:12', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-26 08:47:37', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (51, 'jeremykh1028@gmail.com', NULL, 'Jeremy', 'Khan', 'Jeremy', 0, '2023-01-23', '18654659371', 1, 'en,fr', 'bachelor\'s degree in computer science', 'N/A', 'Canada', '155 Calverley trail', '', 'Toronto', 'Ontario', 'M1C 3Y4', 4, NULL, NULL, 0, NULL, NULL, 'jeremy_avatar.jpg');
 
 SET FOREIGN_KEY_CHECKS = 1;
