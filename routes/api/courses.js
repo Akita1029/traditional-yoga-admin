@@ -36,86 +36,442 @@ router.post("/load_online_courses", async (req, res) => {
 })
 
 router.post("/get_live_classrooms", async (req, res) => {
+
   mysqlConnection.query(
-    "SELECT C.id AS classId, C.name AS name, C.description AS description, C.place AS place, C.photo AS photo, " +
-    " C.members AS members, C.status AS status, " +
-    " CONCAT_WS(' ', U.first_name, U.last_name) AS mentor, " +
-    " U.whatsapp_phonenumber AS mentor_phonenumber, " +
-    " CONCAT_WS(' ', U.street_address, U.address_line_2, U.city, U.province, U.country, U.zip_code) AS mentor_address " +
-    " FROM classrooms AS C " +
-    " JOIN mentor AS M ON(M.id = C.mentor_id) " +
-    " JOIN user AS U ON (U.id = M.user_id) WHERE C.status = 1 " +
-    " ORDER BY C.created_at DESC"
-    ,
+    "SELECT CP.unit_id FROM courseprogress as CP " +
+    " JOIN student as ST ON (CP.student_id = ST.id) " +
+    " JOIN user as U ON(ST.user_id = U.id) " +
+    " WHERE CP.done < 100 and U.email = ?",
+    [req.body.email],
     (err, rows, fields) => {
-    !err ? res.json(rows) : console.log(err);
+    if(rows.length > 0){
+      classId = rows[0].unit_id
+      mysqlConnection.query(
+        "SELECT U.id as classId, U.title, U.content, U.place, U.photo, CS.id as courseId FROM unit as U " +
+        " JOIN section as ST ON (ST.id = U.section_id) " +
+        " JOIN course as CS ON (CS.id = ST.course_id) " +
+        " WHERE U.id = ?",
+        [classId],
+        (err, rows, fields) => {
+          if(rows.length > 0) {
+            title = rows[0].title
+            content = rows[0].content
+            place = rows[0].place
+            photo = rows[0].photo
+            courseId = rows[0].courseId
+            mysqlConnection.query(
+              "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as mentor, " +
+              " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as mentor_address, " +
+              " user.whatsapp_phonenumber as mentor_phonenumber FROM course " +
+              " JOIN mentor ON (course.mentor_id = mentor.id) " +
+              " JOIN user ON (mentor.user_id = user.id) " +
+              " WHERE course.id = ?",
+              [courseId],
+              (err, rows, fields) => {
+                if(rows.length > 0){
+                  mentor = rows[0].mentor
+                  mentor_phonenumber = rows[0].mentor_phonenumber
+                  mysqlConnection.query(
+                    "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
+                    [classId],
+                    (err, rows, fields) => {
+                      if(rows.length > 0){
+                        members = rows[0].members
+                        mysqlConnection.query(
+                          "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as chief, " +
+                          " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as chief_address, " +
+                          " user.whatsapp_phonenumber as chief_phonenumber FROM course " +
+                          " JOIN mentor ON (course.mentor_id = mentor.id) " +
+                          " JOIN user ON (mentor.chief_id = user.id) " +
+                          " WHERE course.id = ?",
+                          [courseId],
+                          (err, rows, fields) => {
+                            if(rows.length > 0) {
+                              chief = rows[0].chief
+                              chief_address = rows[0].chief_address
+                              chief_phonenumber = rows[0].chief_phonenumber
+                              const payload = {
+                                title: title,
+                                photo: photo,
+                                place: place,
+                                content: content,
+                                members: members,
+                                classId: classId,
+                                mentor: mentor,
+                                mentor_phonenumber: mentor_phonenumber,
+                                chief: chief,
+                                chief_address: chief_address,
+                                chief_phonenumber: chief_phonenumber
+                              }
+                              return res.status(200).json(payload)
+                            } else {
+                              return res.status(201)
+                            }
+                          }
+                        )
+                      } else {
+                        return res.status(201)
+                      }
+                    }
+                  )
+                } else {
+                  return res.status(201)
+                }
+              }
+            )
+          } else {
+            return res.status(201)
+          }
+        }
+      )
+    } else {
+      return res.status(201)
+    }
   })
 })
 
+router.post("/get_last_classrooms", async (req, res) => {
+  mysqlConnection.query(
+    "SELECT CP.unit_id as classId, UT.photo FROM courseprogress as CP " +
+    " JOIN student as ST ON (CP.student_id = ST.id) " +
+    " JOIN user as U ON(ST.user_id = U.id) " +
+    " JOIN unit as UT ON (CP.unit_id = UT.id) " +
+    " WHERE CP.done = 100 and U.email = ?"
+    ,
+    [req.body.email],
+    (err, rows, fields) => {
+      if(rows.length > 0){
+        return res.status(200).json(rows)
+      } else {
+        return res.status(201).json('no_exists')
+      }
+    }
+  )
+})
+
+router.post("/get_course_progress", async (req, res) => {
+  const { courseId, userId } = req.body
+  console.log("CourseID:", courseId, "UserID:", userId)
+  mysqlConnection.query(
+    "SELECT C.id as courseId, SD.id as studentId, CP.unit_id as unitId, CP.done FROM courseprogress as CP " +
+    " JOIN unit as UT ON (CP.unit_id = UT.id) " +
+    " JOIN section as ST ON (UT.section_id = ST.id) " +
+    " JOIN course as C ON (ST.course_id = C.id) " +
+    " JOIN student as SD ON (CP.student_id = SD.id) " +
+    " JOIN user as U ON (SD.user_id = U.id) " +
+    " WHERE C.id = ? and U.id = ? and CP.done < 100",
+    [courseId, userId],
+    (err, rows, fields) => {
+      if(!err){
+       if( rows.length > 0){
+        payload = rows[0]
+        mysqlConnection.query(
+          "SELECT unit.title, unit.content, courseprogress.done from unit " +
+          " JOIN courseprogress ON (unit.id = courseprogress.unit_id) " +
+          " JOIN section ON (unit.section_id = section.id) " +
+          " JOIN course ON (section.course_id = course.id) " +
+          " WHERE course.id = ? and courseprogress.student_id = ?",
+          [courseId, payload.studentId],
+          (err, rows, fields) => {
+            if(!err){
+              payload.units = rows
+              return res.status(200).json(payload)
+            } else {
+              console.log(err)
+              return res.status(502).json('no_data')
+            }
+          }
+        )
+       } else {
+        return res.status(201)
+       }
+      } else {
+        console.log(err)
+        return res.status(501).json('no_data')
+      }
+    }
+  )
+})
+
+router.post("/update_course_progress", async (req, res) => {
+  const { unitId, studentId, progress } = req.body
+  mysqlConnection.query(
+    "UPDATE courseprogress SET done = ? WHERE unit_id = ? and student_id = ?",
+    [progress, unitId, studentId],
+    (err, rows, fields) => {
+      if(!err){
+        return res.status(200).json('updated')
+      } else {
+        console.log(err)
+        return res.status(501).json('fail')
+      }
+    }
+  )
+})
+
+router.post("/get_course_detail", async (req, res) => {
+  const { courseId, userId } = req.body
+  console.log('courseId:', courseId, 'userId:', userId)
+  mysqlConnection.query(
+    "SELECT CM.course_id from coursemembers as CM " +
+    " JOIN course as C ON (CM.course_id = C.id) " +
+    " JOIN student as ST ON (CM.student_id = ST.id) " +
+    " JOIN user as U ON (ST.user_id = U.id) " +
+    " WHERE CM.course_id = ? and U.id = ?",
+    [courseId, userId],
+    (err, rows, fields) => {
+      if(!err){
+        if(rows.length > 0){
+          status = 1
+        } else {
+          status = 0
+        }
+        mysqlConnection.query(
+          "SELECT id as courseId, title, duration, duration_param, instructor_name, instructor_photo from course " +
+          " WHERE id = ?",
+          [courseId],
+          (err, rows, fields) => {
+            if(!err) {
+              if(rows.length > 0){
+                let payload = rows[0]
+                payload.status = status
+                return res.status(200).json(payload)
+              } else {
+                return res.status(201).json('invalid_courseId')
+              }
+            } else console.log(err)
+          }
+        )
+      } else {
+        console.log(err)
+      }
+    }
+  )
+})
+
+router.post("/get_units_from_section", async (req, res) => {
+  const { sectionId } = req.body
+  mysqlConnection.query(
+    "SELECT * FROM unit WHERE section_id = ?",
+    [sectionId],
+    (err, rows, fields) => {
+      if(rows.length > 0){
+        return res.status(200).json(rows)
+      } else {
+        return res.status(201)
+      }
+    }
+  )
+})
+
+router.post("/get_current_course", async (req, res) => {
+  const {userId} = req.body
+  mysqlConnection.query(
+    "SELECT CM.course_id, CM.student_id FROM coursemembers as CM " +
+    " JOIN course as C ON (CM.course_id = c.id) " +
+    " JOIN student as ST ON (CM.student_id = ST.id) " +
+    " Join user as U ON (St.user_id = U.id) " +
+    " WHERE C.is_free = 1 and U.id = ?",
+    [userId],
+    (err, rows, fields) => {
+      if(rows.length > 0){
+        course_id = rows[0].course_id
+        mysqlConnection.query(
+          "SELECT * FROM section WHERE course_id = ? order by section.order",
+          [course_id],
+          (err, rows, fields) => {
+            if(rows.length > 0){
+              let payload = {
+                course_id: course_id,
+                sections: rows
+              }
+              return res.status(200).json(payload)
+            } else {
+              return res.status(201).json('no_exists')
+            }
+          }
+        )
+
+      } else {
+        return res.status(201).json('no_exists')
+      }
+    }
+  )
+})
+
 router.post("/get_one_classroom", async (req, res) => {
-  if(req.body.classId == undefined) {
+  const { classId, userId } = req.body
+  console.log(classId, userId)
+  if(classId !== null) {
     mysqlConnection.query(
-      "SELECT C.id AS classId, C.name AS name, C.description AS description, C.place AS place, C.photo AS photo, " +
-      " C.members AS members, C.status AS status, " +
-      " CONCAT_WS(' ', U.first_name, U.last_name) AS mentor, " +
-      " U.whatsapp_phonenumber AS mentor_phonenumber, " +
-      " CONCAT_WS(' ', U.street_address, U.address_line_2, U.city, U.province, U.country, U.zip_code) AS mentor_address " +
-      " FROM classrooms AS C " +
-      " JOIN mentor AS M ON(M.id = C.mentor_id) " +
-      " JOIN user AS U ON (U.id = M.user_id) WHERE C.status = 1 " +
-      " ORDER BY C.created_at DESC"
-      , (err, rows, fields) => {
-      !err ? res.json(rows[0]) : console.log(err);
-    })
+      "SELECT U.id as classId, U.title, U.content, U.place, U.photo, CS.id as courseId FROM unit as U " +
+      " JOIN section as ST ON (ST.id = U.section_id) " +
+      " JOIN course as CS ON (CS.id = ST.course_id) " +
+      " WHERE U.id = ?",
+      [classId],
+      (err, rows, fields) => {
+        if(rows.length > 0) {
+          title = rows[0].title
+          content = rows[0].content
+          place = rows[0].place
+          photo = rows[0].photo
+          courseId = rows[0].courseId
+          mysqlConnection.query(
+            "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as mentor, " +
+            " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as mentor_address, " +
+            " user.whatsapp_phonenumber as mentor_phonenumber FROM course " +
+            " JOIN mentor ON (course.mentor_id = mentor.id) " +
+            " JOIN user ON (mentor.user_id = user.id) " +
+            " WHERE course.id = ?",
+            [courseId],
+            (err, rows, fields) => {
+              if(rows.length > 0){
+                mentor = rows[0].mentor
+                mentor_phonenumber = rows[0].mentor_phonenumber
+                mysqlConnection.query(
+                  "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
+                  [classId],
+                  (err, rows, fields) => {
+                    if(rows.length > 0){
+                      members = rows[0].members
+                      const payload = {
+                        title: title,
+                        photo: photo,
+                        place: place,
+                        content: content,
+                        members: members,
+                        classId: classId,
+                        mentor: mentor,
+                        mentor_phonenumber: mentor_phonenumber
+                      }
+                      console.log(req.body.classId, payload)
+                      return res.status(200).json(payload)
+                    } else {
+                      return res.status(201)
+                    }
+                  }
+                )
+              } else {
+                return res.status(201)
+              }
+            }
+          )
+        } else {
+          return res.status(201)
+        }
+      }
+    )
   } else {
     mysqlConnection.query(
-      "SELECT C.id AS classId, C.name AS name, C.description AS description, C.place AS place, C.photo AS photo, " +
-      " C.members AS members, C.status AS status, " +
-      " CONCAT_WS(' ', U.first_name, U.last_name) AS mentor, " +
-      " U.whatsapp_phonenumber AS mentor_phonenumber, " +
-      " CONCAT_WS(' ', U.street_address, U.address_line_2, U.city, U.province, U.country, U.zip_code) AS mentor_address " +
-      " FROM classrooms AS C " +
-      " JOIN mentor AS M ON(M.id = C.mentor_id) " +
-      " JOIN user AS U ON (U.id = M.user_id) WHERE C.id = ? " +
-      " ORDER BY C.created_at DESC"
-      , [req.body.classId], (err, rows, fields) => {
-        !err ? res.json(rows[0]) : console.log(err);
-    })
+      "SELECT CP.unit_id FROM courseprogress as CP " +
+      " JOIN student as ST ON (CP.student_id = ST.id) " +
+      " JOIN user as U ON(ST.user_id = U.id) " +
+      " WHERE CP.done < 100 and U.id = ?",
+      [userId],
+      (err, rows, fields) => {
+        if(rows.length > 0){
+          unitId = rows[0].unit_id
+          mysqlConnection.query(
+            "SELECT U.id as classId, U.title, U.content, U.place, U.photo, CS.id as courseId FROM unit as U " +
+            " JOIN section as ST ON (ST.id = U.section_id) " +
+            " JOIN course as CS ON (CS.id = ST.course_id) " +
+            " WHERE U.id = ?",
+            [unitId],
+            (err, rows, fields) => {
+              if(rows.length > 0) {
+                title = rows[0].title
+                content = rows[0].content
+                place = rows[0].place
+                photo = rows[0].photo
+                courseId = rows[0].courseId
+                mysqlConnection.query(
+                  "SELECT CONCAT_WS(' ', user.first_name, user.last_name) as mentor, " +
+                  " CONCAT_WS(' ', user.street_address, user.address_line_2, user.city, user.province, user.country) as mentor_address, " +
+                  " user.whatsapp_phonenumber as mentor_phonenumber FROM course " +
+                  " JOIN mentor ON (course.mentor_id = mentor.id) " +
+                  " JOIN user ON (mentor.user_id = user.id) " +
+                  " WHERE course.id = ?",
+                  [courseId],
+                  (err, rows, fields) => {
+                    if(rows.length > 0){
+                      mentor = rows[0].mentor
+                      mentor_phonenumber = rows[0].mentor_phonenumber
+                      mysqlConnection.query(
+                        "SELECT COUNT(student_id) as members FROM courseprogress WHERE unit_id = ? and done < 100",
+                        [classId],
+                        (err, rows, fields) => {
+                          if(rows.length > 0){
+                            members = rows[0].members
+                            const payload = {
+                              title: title,
+                              photo: photo,
+                              place: place,
+                              content: content,
+                              members: members,
+                              classId: unitId,
+                              mentor: mentor,
+                              mentor_phonenumber: mentor_phonenumber
+                            }
+                            console.log(req.body.classId, payload)
+                            return res.status(200).json(payload)
+                          } else {
+                            return res.status(201)
+                          }
+                        }
+                      )
+                    } else {
+                      return res.status(201)
+                    }
+                  }
+                )
+              } else {
+                return res.status(201)
+              }
+            }
+          )
+        } else {
+          return res.status(201).json('no_exists')
+        }
+      }
+    )
+
   }
 })
 
 router.post("/join_to_classroom", async (req, res) => {
   const { classId, userId } = req.body
   mysqlConnection.query(
-    "SELECT * FROM classmembers WHERE classId = ? and userId = ?",
-    [classId, userId],
+    "SELECT id from student WHERE user_id = ?",
+    [userId],
     (err, rows, fields) => {
       if(rows.length > 0){
-        return res.status(201).json('already_exists')
-      } else {
+        studentId = rows[0].id
         mysqlConnection.query(
-          "INSERT INTO classmembers(classId, userId) VALUES (?, ?)",
-          [classId, userId],
+          "SELECT * FROM courseprogress WHERE unit_id = ? and student_id = ?",
+          [classId, studentId],
           (err, rows, fields) => {
-            if(!err){
+            if(rows.length > 0){
+              return res.status(201).json('already_exists')
+            } else {
               mysqlConnection.query(
-                "UPDATE classrooms SET members = members + 1 WHERE id = ?",
-                [classId],
+                "INSERT INTO courseprogress(unit_id, student_id, done) VALUES (?, ?, ?)",
+                [classId, studentId, 0],
                 (err, rows, fields) => {
                   if(!err){
                     return res.status(200).json('success')
                   } else {
-                    return res.status(501).json('join_update_fail')
+                    return res.status(500).json('join_fail')
                   }
                 }
               )
-            } else {
-              return res.status(500).json('join_fail')
             }
-          }
-        )
+          })
+      } else {
+        return res.status(501).json('join_fail')
       }
-    })
+    }
+  )
+
 })
 
 router.post("/add", (req, res) => {
@@ -142,7 +498,7 @@ router.post("/add", (req, res) => {
 router.post("/getUserCourses", (req, res) => {
   const { email } = req.body
   mysqlConnection.query(
-    "SELECT course.title, course.detail_content, course.instructor_photo FROM user " +
+    "SELECT courses.id, course.title, course.detail_content, course.instructor_photo FROM user " +
     "JOIN student ON (user.id = student.user_id) " +
     "JOIN coursemembers ON (student.id = coursemembers.student_id) " +
     "JOIN course ON (coursemembers.course_id = course.id) " +
