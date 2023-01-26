@@ -14,18 +14,23 @@ router.post("/getUserPastPractice", (req, res) => {
     " WHERE user.email = ?",
     [email],
     (err, rows, fields) => {
-      if(rows.length > 0) {
-        pastPractice = rows[0].past_yoga_experience
-        return res.status(200).json({pastPractice: pastPractice})
+      if(!err){
+        if(rows.length > 0) {
+          pastPractice = rows[0].past_yoga_experience
+          return res.status(200).json({pastPractice: pastPractice})
+        } else {
+          return res.status(201).json({pastPractice: 'No Result'})
+        }
       } else {
-        return res.status(201).json({pastPractice: 'No Result'})
+        console.log(err)
+        return res.status(501).json('error')
       }
     }
   )
 })
 
 router.post("/getUserCertificates", (req, res) => {
-
+  return res.status(200)
 })
 
 router.post("/getAllStudents", (req, res) => {

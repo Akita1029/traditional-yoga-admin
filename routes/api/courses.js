@@ -498,18 +498,22 @@ router.post("/add", (req, res) => {
 router.post("/getUserCourses", (req, res) => {
   const { email } = req.body
   mysqlConnection.query(
-    "SELECT courses.id, course.title, course.detail_content, course.instructor_photo FROM user " +
+    "SELECT course.id, course.title, course.detail_content, course.instructor_photo FROM user " +
     "JOIN student ON (user.id = student.user_id) " +
     "JOIN coursemembers ON (student.id = coursemembers.student_id) " +
     "JOIN course ON (coursemembers.course_id = course.id) " +
     "WHERE user.email = ?",
     [email],
     (err, rows, fields) => {
-      console.log(rows)
-      if(rows.length > 0){
-        return res.status(200).json({courses: rows})
+      if(!err) {
+        if(rows.length > 0){
+          return res.status(200).json({courses: rows})
+        } else {
+          return res.status(201).json({courses: []})
+        }
       } else {
-        return res.status(201).json({courses: []})
+        console.log(err)
+        return res.status(501).json('error')
       }
     }
 
