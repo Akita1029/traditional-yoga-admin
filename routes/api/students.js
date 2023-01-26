@@ -23,7 +23,7 @@ router.post("/getUserPastPractice", (req, res) => {
         }
       } else {
         console.log(err)
-        return res.status(501).json('error')
+        return res.status(502).json('error')
       }
     }
   )
