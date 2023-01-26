@@ -63,6 +63,91 @@ router.post("/getUserApplicationForm", (req, res) => {
   // )
 })
 
+router.post("/getAllStudents", (req, res) => {
+  const { email } = req.body
+  mysqlConnection.query(
+    "SELECT user.*, student.* FROM student join user ON (student.user_id = user.id)",
+    [],
+    (err, rows, fields) => {
+      if (rows.length > 0) {
+        return res.status(200).json(rows)
+      } else {
+        return res.status(201).json('no_students')
+      }
+    }
+  )
+})
+
+router.post("/getActiveStudents", (req, res) => {
+  mysqlConnection.query(
+    "SELECT * FROM student WHERE status = 2",
+    [],
+    (err, rows, fields) => {
+      if (rows.length > 0) {
+        return res.status(200).json(rows)
+      } else {
+        return res.status(201).json({ students: [] })
+      }
+    }
+  )
+})
+
+router.post("/getPendingStudents", (req, res) => {
+  mysqlConnection.query(
+    "SELECT * FROM student WHERE status = 0",
+    [],
+    (err, rows, fields) => {
+      if (rows.length > 0) {
+        return res.status(200).json(rows)
+      } else {
+        return res.status(201).json({ students: [] })
+      }
+    }
+  )
+})
+
+router.post("/create", async (req, res) => {
+  mysqlConnection.query(
+    // "INSERT INTO student * VALUES ?",
+    // [
+    //   req.body
+    // ],
+    // (err, rows, fields) => {
+    //   console.log(err)
+    //   console.log(rows)
+    //   console.log(fields)
+    //   if(err == null) {
+    //     return res.status(201).json({message: "success"})
+    //   }
+    //   else {
+    //     return res.status(204).json({message: "insert_fail"})
+    //   }
+    // }
+  )
+});
+
+router.post("/update", (req, res) => {
+  //   const id = req.body.id;
+  //   const newCourse = req.body;
+  console.log(req.body)
+  mysqlConnection.query("UPDATE student set ? WHERE id = ?", [
+    req.body,
+    req.body.id,
+  ], (err) => {
+    if (!err) return res.status(200).json({ message: 'success' })
+    else console.log('update failed')
+  });
+});
+
+router.post("/delete", (req, res) => {
+  const id = req.body.id;
+  console.log(id)
+  mysqlConnection.query("DELETE FROM student WHERE id = ?", [id], (err) => {
+    if (!err) return res.status(200).json({ message: 'success' })
+    else console.log('delete failed')
+  });
+});
+
 router.post("/add", (req, res) => {
   mysqlConnection.query(
     "INSERT INTO student (hear_about_us, past_yoga_experience, course_outline, course_ethos, course_disciplne, vedic_nutraceutical, discipline_acknowledgement, contact_detail) VALUES (?,?,?,?,?,?,?,?)",
