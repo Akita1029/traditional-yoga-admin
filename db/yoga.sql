@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 26/01/2023 15:11:24
+ Date: 26/01/2023 15:45:25
 */
 
 SET NAMES utf8mb4;
@@ -179,6 +179,8 @@ INSERT INTO `courseprogress` VALUES (2, 10, 50);
 INSERT INTO `courseprogress` VALUES (3, 10, 100);
 INSERT INTO `courseprogress` VALUES (4, 9, 100);
 INSERT INTO `courseprogress` VALUES (4, 10, 100);
+INSERT INTO `courseprogress` VALUES (3, 8, 0);
+INSERT INTO `courseprogress` VALUES (2, 8, 0);
 
 -- ----------------------------
 -- Table structure for coursequiz
@@ -384,7 +386,7 @@ CREATE TABLE `student`  (
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES (8, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 14:38:12', 'Helo', '898989', NULL);
+INSERT INTO `student` VALUES (8, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 05:38:12', 'Helo12', '898989', NULL);
 INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 14:38:12', 'Loparen', '898989', NULL);
 INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Nouuse', '221553', 'id');
 INSERT INTO `student` VALUES (11, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Sophie', '221553', 'id');
@@ -472,9 +474,9 @@ CREATE TABLE `user`  (
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, '19573632574', 1, 'en, hd', 'master\'s degree', 'N/A', 'United States', '710 Tina Manker Rd', ' ', 'Ridgeland', 'South Carolina', '29936', 0, '2023-01-26 02:43:53', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
-INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, '	022 2756 3377', 1, 'en,hd', 'doctor', 'N/A', 'India', 'Palm Beach Rd, Sector 15, CBD Belapur', '', 'Navi Mumbai', '	Maharashtra', '	400614', 2, '2023-01-26 02:42:55', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, '	022 2756 3377', 1, 'en,hd', 'doctor', 'N/A', 'India', 'Palm Beach Rd, Sector 15, CBD Belapur', ' ', 'Navi Mumbai', '	Maharashtra', '	400614', 2, '2023-01-26 02:42:55', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL, 'suren_avatar.jpg');
 INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, '	099 47 770555', 1, 'en,hd', 'doctor', 'N/A', 'India', '	Salem - Kochi - Kanyakumari Hwy, Sreekariyam', '', '	Thiruvananthapuram', '	Kerala', '	695017', 1, '2023-01-26 02:44:12', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL, 'suren_avatar.jpg');
-INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-26 08:47:37', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-26 11:26:40', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
 INSERT INTO `user` VALUES (51, 'jeremykh1028@gmail.com', NULL, 'Jeremy', 'Khan', 'Jeremy', 0, '2023-01-23', '18654659371', 1, 'en,fr', 'bachelor\'s degree in computer science', 'N/A', 'Canada', '155 Calverley trail', '', 'Toronto', 'Ontario', 'M1C 3Y4', 4, NULL, NULL, 0, NULL, NULL, 'jeremy_avatar.jpg');
 
 SET FOREIGN_KEY_CHECKS = 1;
