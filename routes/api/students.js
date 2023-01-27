@@ -1,7 +1,7 @@
-const { resolveSoa } = require("dns");
-const express = require("express");
-const router = express.Router();
-const mysqlConnection = require("../../config/config");
+const { resolveSoa } = require("dns")
+const express = require("express")
+const router = express.Router()
+const mysqlConnection = require("../../config/config")
 
 
 
@@ -124,11 +124,11 @@ router.post("/create", async (req, res) => {
     //   }
     // }
   )
-});
+})
 
 router.post("/update", (req, res) => {
-  //   const id = req.body.id;
-  //   const newCourse = req.body;
+  //   const id = req.body.id
+  //   const newCourse = req.body
   console.log(req.body)
   mysqlConnection.query("UPDATE student set ? WHERE id = ?", [
     req.body,
@@ -136,17 +136,17 @@ router.post("/update", (req, res) => {
   ], (err) => {
     if (!err) return res.status(200).json({ message: 'success' })
     else console.log('update failed')
-  });
-});
+  })
+})
 
 router.post("/delete", (req, res) => {
-  const id = req.body.id;
+  const id = req.body.id
   console.log(id)
   mysqlConnection.query("DELETE FROM student WHERE id = ?", [id], (err) => {
     if (!err) return res.status(200).json({ message: 'success' })
     else console.log('delete failed')
-  });
-});
+  })
+})
 
 router.post("/add", (req, res) => {
   mysqlConnection.query(
@@ -162,10 +162,10 @@ router.post("/add", (req, res) => {
       req.body.contact_detail,
     ],
     (err, rows, fields) => {
-      !err ? console.log("add student success") : console.log(err);
+      !err ? console.log("add student success") : console.log(err)
     }
-  );
-});
+  )
+})
 
 router.post("/edit", (req, res) => {
   mysqlConnection.query(
@@ -182,9 +182,9 @@ router.post("/edit", (req, res) => {
       // req.params.id,
     ],
     (err, rows, fields) => {
-      !err ? console.log("edit student success") : console.log(err);
+      !err ? console.log("edit student success") : console.log(err)
     }
-  );
-});
+  )
+})
 
-module.exports = router;
+module.exports = router

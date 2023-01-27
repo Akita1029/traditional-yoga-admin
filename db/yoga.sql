@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 26/01/2023 15:45:25
+ Date: 27/01/2023 18:46:58
 */
 
 SET NAMES utf8mb4;
@@ -101,16 +101,19 @@ CREATE TABLE `course`  (
   `course_completion_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `is_free` tinyint(1) NULL DEFAULT NULL,
   `mentor_id` int NULL DEFAULT NULL,
+  `createdAt` datetime(6) NULL DEFAULT NULL,
+  `place` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `startedAt` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of course
 -- ----------------------------
-INSERT INTO `course` VALUES (1, '(Raeatrwetyrraditional', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', '01_preview_large.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
-INSERT INTO `course` VALUES (2, '(RYIewqrqwertqweonal', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'image-45-copyright-min.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
-INSERT INTO `course` VALUES (3, '(Raeatrwetyrraditional', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'group-photo-sun-2-1-768x512-310x207.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
-INSERT INTO `course` VALUES (4, '(RYIewqrqwertqweonal', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'ayurveda-services-consultation.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
+INSERT INTO `course` VALUES (1, 'Cobra Position-2023', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', '01_preview_large.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-01-21 08:38:12.000000', 'Online', '2023-01-21 08:38:12.000000');
+INSERT INTO `course` VALUES (2, '2022 Online Course-Lion Position', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'image-45-copyright-min.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-01-23 05:38:12.000000', 'Bombei Online Stadium', '2023-01-23 05:38:12.000000');
+INSERT INTO `course` VALUES (3, 'Rasperi Oilo-2023', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'group-photo-sun-2-1-768x512-310x207.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-01-23 20:38:17.000000', 'Online', '2023-01-23 20:38:17.000000');
+INSERT INTO `course` VALUES (4, 'Honey Location', 'Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharam For Yoga Teachers and Students to become a ...', 0, 'Dr.Kumar', 'ayurveda-services-consultation.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-01-23 20:38:17.000000', 'Online', '2023-01-23 20:38:17.000000');
 
 -- ----------------------------
 -- Table structure for courseassignment
@@ -221,17 +224,29 @@ INSERT INTO `family` VALUES (3, 10, 'Father', 'Jeremy Khan', '19063738322');
 -- ----------------------------
 DROP TABLE IF EXISTS `mentor`;
 CREATE TABLE `mentor`  (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL,
+  `legalName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `chiefMentor` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `country` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `city` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `gender` int NULL DEFAULT NULL,
+  `status` int NULL DEFAULT NULL,
+  `created_at` datetime(6) NULL DEFAULT NULL,
   `user_id` int NULL DEFAULT NULL,
   `chief_id` int NULL DEFAULT NULL,
-  `active` tinyint(1) NULL DEFAULT NULL,
+  `active` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mentor
 -- ----------------------------
-INSERT INTO `mentor` VALUES (1, 47, 48, 1);
+INSERT INTO `mentor` VALUES (1, 'Dr. Kumar', 'Ceo. James', '0221', 'India', 'Mumbai', 1, 1, '2023-01-21 08:38:12.000000', 47, 48, 1);
+INSERT INTO `mentor` VALUES (2, 'Dr. Luis', 'Ceo. James', '1189', 'Japan', 'Tokyo', 1, 1, '2023-01-23 05:38:12.000000', 47, 48, 1);
+INSERT INTO `mentor` VALUES (3, 'Dr. Joke', 'Ceo. James', '9986', 'Germany', 'Berlin', 2, 1, '2023-01-23 20:38:17.000000', 47, 48, 1);
+INSERT INTO `mentor` VALUES (4, 'Dr. Hone', 'Ceo. James', '5569', 'India', 'New Delhi', 1, 1, '2023-01-23 20:38:17.000000', 47, 48, 1);
+INSERT INTO `mentor` VALUES (5, 'Br. Kuin', 'Ceo. Choi', '7788', 'Russia', 'Moscow', 1, 0, '2023-01-23 20:38:17.000000', 47, 48, 0);
 
 -- ----------------------------
 -- Table structure for mentormembers
@@ -245,6 +260,119 @@ CREATE TABLE `mentormembers`  (
 -- ----------------------------
 -- Records of mentormembers
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for notification
+-- ----------------------------
+DROP TABLE IF EXISTS `notification`;
+CREATE TABLE `notification`  (
+  `id` int NOT NULL,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `readState` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `deleted` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(6) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of notification
+-- ----------------------------
+INSERT INTO `notification` VALUES (1, 'To chief mentors', 'Hello. Every one.', '0', '0', '2023-01-26 00:00:00.000000');
+INSERT INTO `notification` VALUES (2, 'Major changes to every one', '\"Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharma For Yoga Teachers and Students to become Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharma For Yoga Teachers and Students to become a....\"\"Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharma For Yoga Teachers and Students to become Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharma For Yoga Teachers and Students to become a....\"\"Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharma For Yoga Teachers and Students to become Free Online Traditional Meditation Teacher Training Based on Darashanas Or Sanathana Dharma For Yoga Teachers and Students to become a....\"', '1', '0', '2023-01-26 00:00:00.000000');
+INSERT INTO `notification` VALUES (3, 'Start a Yoga course on 2023-1-25', 'Yoga - 20231023', '1', '0', '2023-01-26 00:00:00.000000');
+INSERT INTO `notification` VALUES (4, 'Here you start.', 'Hero - 220112', '0', '0', '2023-01-26 00:00:00.000000');
+
+-- ----------------------------
+-- Table structure for professions
+-- ----------------------------
+DROP TABLE IF EXISTS `professions`;
+CREATE TABLE `professions`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 78 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of professions
+-- ----------------------------
+INSERT INTO `professions` VALUES (1, 'Yoga Teacher');
+INSERT INTO `professions` VALUES (2, 'Spiritual Leader');
+INSERT INTO `professions` VALUES (3, 'Gym Instructor');
+INSERT INTO `professions` VALUES (4, 'Meditation Teacher');
+INSERT INTO `professions` VALUES (5, 'Personal Teacher');
+INSERT INTO `professions` VALUES (6, 'Accountant');
+INSERT INTO `professions` VALUES (7, 'Actor Actress');
+INSERT INTO `professions` VALUES (8, 'Air traffic controller');
+INSERT INTO `professions` VALUES (9, 'Architect');
+INSERT INTO `professions` VALUES (10, 'Artist');
+INSERT INTO `professions` VALUES (11, 'Attorney\r\n');
+INSERT INTO `professions` VALUES (12, 'Banker');
+INSERT INTO `professions` VALUES (13, 'Bartender');
+INSERT INTO `professions` VALUES (14, 'Barber');
+INSERT INTO `professions` VALUES (15, 'Bookkeeper');
+INSERT INTO `professions` VALUES (16, 'Builder');
+INSERT INTO `professions` VALUES (17, 'Businessman');
+INSERT INTO `professions` VALUES (18, 'Businesswoman');
+INSERT INTO `professions` VALUES (19, 'Businessperson');
+INSERT INTO `professions` VALUES (20, 'Butcher');
+INSERT INTO `professions` VALUES (21, 'Carpenter');
+INSERT INTO `professions` VALUES (22, 'Cashier');
+INSERT INTO `professions` VALUES (23, 'Chef');
+INSERT INTO `professions` VALUES (24, 'Coach');
+INSERT INTO `professions` VALUES (25, 'Dental hygienist Dentist');
+INSERT INTO `professions` VALUES (26, 'Designer');
+INSERT INTO `professions` VALUES (27, 'Developer');
+INSERT INTO `professions` VALUES (28, 'Dietcian');
+INSERT INTO `professions` VALUES (29, 'Doctor');
+INSERT INTO `professions` VALUES (30, 'Economist');
+INSERT INTO `professions` VALUES (31, 'Editor');
+INSERT INTO `professions` VALUES (32, 'Electrician');
+INSERT INTO `professions` VALUES (33, 'Engineer');
+INSERT INTO `professions` VALUES (34, 'Farmer');
+INSERT INTO `professions` VALUES (35, 'Filmmaker');
+INSERT INTO `professions` VALUES (36, 'Fisherman');
+INSERT INTO `professions` VALUES (37, 'Flight attendant');
+INSERT INTO `professions` VALUES (38, 'Home Maker');
+INSERT INTO `professions` VALUES (39, 'Jeweler');
+INSERT INTO `professions` VALUES (40, 'Judge');
+INSERT INTO `professions` VALUES (41, 'Lawyer');
+INSERT INTO `professions` VALUES (42, 'Lecturer');
+INSERT INTO `professions` VALUES (43, 'Mechanic');
+INSERT INTO `professions` VALUES (44, 'Musician');
+INSERT INTO `professions` VALUES (45, 'Nutritionist');
+INSERT INTO `professions` VALUES (46, 'Nurse');
+INSERT INTO `professions` VALUES (47, 'Optician');
+INSERT INTO `professions` VALUES (48, 'Painter');
+INSERT INTO `professions` VALUES (49, 'Pharmacist');
+INSERT INTO `professions` VALUES (50, 'Photographer');
+INSERT INTO `professions` VALUES (51, 'Physician');
+INSERT INTO `professions` VALUES (52, 'Physician\'s assistant');
+INSERT INTO `professions` VALUES (53, 'Pilot');
+INSERT INTO `professions` VALUES (54, 'Plumber');
+INSERT INTO `professions` VALUES (55, 'Police officer');
+INSERT INTO `professions` VALUES (56, 'Politician');
+INSERT INTO `professions` VALUES (57, 'Professor');
+INSERT INTO `professions` VALUES (58, 'Programmer');
+INSERT INTO `professions` VALUES (59, 'Psychologist');
+INSERT INTO `professions` VALUES (60, 'Receptionist');
+INSERT INTO `professions` VALUES (61, 'Salesman');
+INSERT INTO `professions` VALUES (62, 'Salesperson');
+INSERT INTO `professions` VALUES (63, 'Saleswoman');
+INSERT INTO `professions` VALUES (64, 'Secretary');
+INSERT INTO `professions` VALUES (65, 'Singer');
+INSERT INTO `professions` VALUES (66, 'Student');
+INSERT INTO `professions` VALUES (67, 'Surgeon');
+INSERT INTO `professions` VALUES (68, 'Teacher');
+INSERT INTO `professions` VALUES (69, 'Therapist');
+INSERT INTO `professions` VALUES (70, 'Translator');
+INSERT INTO `professions` VALUES (71, 'Undertaker');
+INSERT INTO `professions` VALUES (72, 'Veternarian');
+INSERT INTO `professions` VALUES (73, 'Videographer');
+INSERT INTO `professions` VALUES (74, 'Waiter');
+INSERT INTO `professions` VALUES (75, 'Waitress');
+INSERT INTO `professions` VALUES (76, 'Writer');
+INSERT INTO `professions` VALUES (77, 'Other');
 
 -- ----------------------------
 -- Table structure for query
@@ -386,12 +514,12 @@ CREATE TABLE `student`  (
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES (8, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 05:38:12', 'Helo12', '898989', NULL);
-INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-23 14:38:12', 'Loparen', '898989', NULL);
-INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Nouuse', '221553', 'id');
-INSERT INTO `student` VALUES (11, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Sophie', '221553', 'id');
-INSERT INTO `student` VALUES (12, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Joke', '221553', 'id');
-INSERT INTO `student` VALUES (13, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Hopoen', '221553', 'id');
+INSERT INTO `student` VALUES (8, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 2, NULL, '2023-01-21 08:38:12', 'Helo12', '898989', '2');
+INSERT INTO `student` VALUES (9, 50, 'google', 'I have 10 years experience in yoga practice.', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', '@devdemon1028', 0, NULL, '2023-01-23 05:38:12', 'Loparen', '898989', '1');
+INSERT INTO `student` VALUES (10, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Nouuse', '221553', '1');
+INSERT INTO `student` VALUES (11, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Sophie', '221553', '3');
+INSERT INTO `student` VALUES (12, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Joke', '221553', '2');
+INSERT INTO `student` VALUES (13, 51, 'google', 'I have 5 years experience in yoga practice', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'Sample Text', 'live:.cid.95f87dcdd5adc6a7', 0, NULL, '2023-01-23 20:38:17', 'Hopoen', '221553', '2');
 
 -- ----------------------------
 -- Table structure for testuser
@@ -473,10 +601,10 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, '19573632574', 1, 'en, hd', 'master\'s degree', 'N/A', 'United States', '710 Tina Manker Rd', ' ', 'Ridgeland', 'South Carolina', '29936', 0, '2023-01-26 02:43:53', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
-INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, '	022 2756 3377', 1, 'en,hd', 'doctor', 'N/A', 'India', 'Palm Beach Rd, Sector 15, CBD Belapur', ' ', 'Navi Mumbai', '	Maharashtra', '	400614', 2, '2023-01-26 02:42:55', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL, 'suren_avatar.jpg');
-INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, '	099 47 770555', 1, 'en,hd', 'doctor', 'N/A', 'India', '	Salem - Kochi - Kanyakumari Hwy, Sreekariyam', '', '	Thiruvananthapuram', '	Kerala', '	695017', 1, '2023-01-26 02:44:12', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL, 'suren_avatar.jpg');
-INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-26 11:26:40', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, 'suren_avatar.jpg');
+INSERT INTO `user` VALUES (46, 'admin@yoga.com', 'asdf', 'Yoga', 'Admin', NULL, NULL, NULL, '19573632574', 1, 'en, hd', 'master\'s degree', 'N/A', 'United States', '710 Tina Manker Rd', ' ', 'Ridgeland', 'South Carolina', '29936', 0, '2023-01-26 02:43:53', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, '1674805801887.jpg');
+INSERT INTO `user` VALUES (47, 'mentor@yoga.com', 'asdfg', 'Yoga', 'Mentor', NULL, NULL, NULL, '	022 2756 3377', 1, 'en,hd', 'doctor', 'N/A', 'India', 'Palm Beach Rd, Sector 15, CBD Belapur', ' ', 'Navi Mumbai', '	Maharashtra', '	400614', 2, '2023-01-27 06:13:30', '$2a$10$ElMU.uVXI4FUtCLlExdEZeB3VzwXQVEMIG67wfjanSCPPqx0xONZG', 1, NULL, NULL, '1674805801887.jpg');
+INSERT INTO `user` VALUES (48, 'chief@yoga.com', 'asdfg', 'Chief', 'Mentor', NULL, NULL, NULL, '	099 47 770555', 1, 'en,hd', 'doctor', 'N/A', 'India', '	Salem - Kochi - Kanyakumari Hwy, Sreekariyam', ' ', '	Thiruvananthapuram', '	Kerala', '	695017', 1, '2023-01-27 05:03:24', '$2a$10$qbepXy69WihmEkWlrkwH9uVpBTCwuMN59wCi.l/LaZGR1uOFEIElW', 1, NULL, NULL, '1674806583864.jpg');
+INSERT INTO `user` VALUES (50, 'darbinyan.dev@gmail.com', 'asdf', 'Suren', 'Darbinyan', 'Suren', 0, '2023-01-23', '15405724932', 1, 'en', 'bachelor\'s degree in computer science', 'N/A', 'Armenia', 'Rubinyants 17/2 apt 26', '', 'Yerevan', 'Yerevan', '0069', 3, '2023-01-27 06:13:00', '$2a$10$8q1o61oPMbl79YAS/5T8x.tD/FMQGAyghL6xo8c4ziL2ZRHPkac1O', 1, NULL, NULL, '1674805801887.jpg');
 INSERT INTO `user` VALUES (51, 'jeremykh1028@gmail.com', NULL, 'Jeremy', 'Khan', 'Jeremy', 0, '2023-01-23', '18654659371', 1, 'en,fr', 'bachelor\'s degree in computer science', 'N/A', 'Canada', '155 Calverley trail', '', 'Toronto', 'Ontario', 'M1C 3Y4', 4, NULL, NULL, 0, NULL, NULL, 'jeremy_avatar.jpg');
 
 SET FOREIGN_KEY_CHECKS = 1;

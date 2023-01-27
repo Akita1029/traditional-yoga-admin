@@ -1,12 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const mysqlConnection = require("../../config/config");
-const moment = require("moment");
+const express = require("express")
+const router = express.Router()
+const mysqlConnection = require("../../config/config")
+const moment = require("moment")
 
 router.post("/submit", async (req, res) => {
-  let error = "";
+  let error = ""
   mysqlConnection.query(
-    "INSERT INTO query (firstName, lastName, email, phone, country, message) " + 
+    "INSERT INTO query (firstName, lastName, email, phone, country, message) " +
       " VALUES (?,?,?,?,?,?)",
     [
       req.body.firstName,
@@ -17,13 +17,13 @@ router.post("/submit", async (req, res) => {
       req.body.message
     ],
     (err, rows, fields) => {
-      !err ? error = "" : error = err;
+      !err ? error = "" : error = err
     }
-  );
-  if(error == "") return res.status(200).json({message: "success"});
+  )
+  if(error == "") return res.status(200).json({message: "success"})
   else {
-    return res.status(501).json({message: "fail"});
+    return res.status(501).json({message: "fail"})
   }
-});
+})
 
-module.exports = router;
+module.exports = router

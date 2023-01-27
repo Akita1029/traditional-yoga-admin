@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const mysqlConnection = require("../../config/config");
+const express = require("express")
+const router = express.Router()
+const mysqlConnection = require("../../config/config")
 const moment = require("moment")
 
 router.post("/create", async (req, res) => {
@@ -21,17 +21,17 @@ router.post("/create", async (req, res) => {
       }
     }
   )
-});
+})
 
 router.get("/alldata", async (req, res) => {
   mysqlConnection.query("Select * from course", (err, rows, fields) => {
-    !err ? res.json(rows) : console.log(err);
-  });
-});
+    !err ? res.json(rows) : console.log(err)
+  })
+})
 
 router.post("/load_online_courses", async (req, res) => {
   mysqlConnection.query("Select * from course Where is_free = 1", (err, rows, fields) => {
-    !err ? res.json(rows) : console.log(err);
+    !err ? res.json(rows) : console.log(err)
   })
 })
 
@@ -552,11 +552,11 @@ router.post("/add", (req, res) => {
   //       req.body.contact_detail,
   //     ],
   //     (err, rows, fields) => {
-  //       !err ? console.log("add student success") : console.log(err);
+  //       !err ? console.log("add student success") : console.log(err)
   //     }
-  //   );
-  const newCourse = req.body;
-  mysqlConnection.query("INSERT INTO course set ?", [newCourse]);
+  //   )
+  const newCourse = req.body
+  mysqlConnection.query("INSERT INTO course set ?", [newCourse])
 })
 
 router.post("/getUserCourses", (req, res) => {
@@ -598,33 +598,33 @@ router.post("/edit", (req, res) => {
   //       req.body.id,
   //     ],
   //     (err, rows, fields) => {
-  //       !err ? console.log("edit student success") : console.log(err);
+  //       !err ? console.log("edit student success") : console.log(err)
   //     }
-  //   );
-  //   const id = req.body.id;
+  //   )
+  //   const id = req.body.id
   mysqlConnection.query(
     "SELECT * FROM course WHERE id = ?",
     [req.body.id],
     (err, rows, fields) => {
-      res.json(rows[0]);
+      res.json(rows[0])
     }
-  );
-  //   res.json(result[0]);
-});
+  )
+  //   res.json(result[0])
+})
 
 router.post("/update", (req, res) => {
-  //   const id = req.body.id;
-  //   const newCourse = req.body;
+  //   const id = req.body.id
+  //   const newCourse = req.body
   mysqlConnection.query("UPDATE course set ? WHERE id = ?", [
     req.body,
     req.body.id,
-  ]);
-});
+  ])
+})
 
 router.post("/delete", (req, res) => {
-  const id = req.body.id;
-  const result = mysqlConnection.query("DELETE FROM course WHERE id = ?", [id]);
-});
+  const id = req.body.id
+  const result = mysqlConnection.query("DELETE FROM course WHERE id = ?", [id])
+})
 
 // Take Course
 router.post("/takecourse", async (req, res) => {

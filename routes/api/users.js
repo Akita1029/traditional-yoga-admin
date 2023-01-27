@@ -15,8 +15,8 @@ const nodemailer = require("nodemailer")
 
 router.post("/alldata", async (req, res) => {
   mysqlConnection.query("Select * from user", (err, rows, fields) => {
-    !err ? res.json(rows) : console.log(err);
-    // console.log(res.json(rows));
+    !err ? res.json(rows) : console.log(err)
+    // console.log(res.json(rows))
   })
 })
 
@@ -53,7 +53,7 @@ router.post("/signup", async (req, res) => {
     "SELECT * FROM user WHERE id > 0",
     [],
     (err, rows, fields) => {
-      rows.length == 0? (role = 0) : (role = 4);
+      rows.length == 0? (role = 0) : (role = 4)
       if(role == 0){
         mysqlConnection.query(
           "INSERT INTO user (email, hash, password, first_name, last_name, role,status, last_logged_in) " +
@@ -70,13 +70,13 @@ router.post("/signup", async (req, res) => {
           ],
           (err, rows, fields) => {
             if(err == null){
-              const token = jwt.sign({ id: rows.insertId }, process.env.TOKEN_SECRET);
+              const token = jwt.sign({ id: rows.insertId }, process.env.TOKEN_SECRET)
               const payload = {
                 token: token,
                 role: role,
                 message: "admin_success"
-              };
-              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true });
+              }
+              res.cookie("auth-token", token, { maxAge: 360000, httpOnly: true })
               return res.status(200).json(payload)
             } else  {
               return res.status(204).json({message: "insert_fail"})
@@ -269,8 +269,8 @@ router.post("/login", async (req, res) => {
           "SELECT last_logged_in from  user WHERE email = ?",
           [req.body.email],
           (err, rows, fields) => {
-            if(rows.length > 0) resetPassword = false;
-            else resetPassword = true;
+            if(rows.length > 0) resetPassword = false
+            else resetPassword = true
             mysqlConnection.query(
               "UPDATE user SET last_logged_in = ? WHERE email = ?",
               [moment(new Date()).format("YYYY-MM-DD hh:mm:ss"), req.body.email],
@@ -292,7 +292,22 @@ router.post("/login", async (req, res) => {
         )
       })
     }
-  );
-});
+  )
+})
 
-module.exports = router;
+router.post("/updateAvatar", async (req, res) => {
+  console.log(req.body)
+  mysqlConnection.query(
+    "UPDATE user SET avatar = ?" +
+    " WHERE id = ?",
+    [req.body.filename, req.body.AuthUser.id],
+    (err, rows, fields) => {
+      if(err){
+        return res.status(201).json('update_fail')
+      } else {
+        return res.status(200).json('success')
+      }
+    }
+  )
+})
+module.exports = router
