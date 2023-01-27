@@ -13,7 +13,7 @@ const notifications = require("./routes/api/notification")
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '../traditional-yoga/src/assets/images/')
+    cb(null, '../traditional-yoga/src/assets/images/uploads/')
   },
   filename: (req, file, cb) => {
     const fileExt = file.originalname.split('.').pop()
