@@ -63,45 +63,56 @@ router.post("/getUserApplicationForm", (req, res) => {
   // )
 })
 
-router.post("/getAllStudents", (req, res) => {
-  const { email } = req.body
+router.post("/getActiveStudents", (req, res) => {
+  const { chief_id } = req.body
   mysqlConnection.query(
-    "SELECT user.*, student.* FROM student join user ON (student.user_id = user.id)",
-    [],
+    "SELECT user.email, user.first_name, user.last_name, user.whatsapp_phonenumber, " +
+    " user.country, user.province, user.city, user.gender, student.created_at, student.status, student.mentor_id FROM student " +
+    " JOIN mentor ON (student.mentor_id = mentor.id) " +
+    " JOIN user ON (student.user_id = user.id) " +
+    " WHERE student.status = 2 and mentor.chief_id = ? ",
+    [chief_id],
     (err, rows, fields) => {
-      if (rows.length > 0) {
-        return res.status(200).json(rows)
-      } else {
-        return res.status(201).json('no_students')
+      if(err) {
+        console.log(err)
+        return res.status(501)
       }
+      return res.status(200).json(rows)
     }
   )
 })
 
-router.post("/getActiveStudents", (req, res) => {
+router.post("/getActiveMentors", (req, res) => {
+  const { chief_id } = req.body
   mysqlConnection.query(
-    "SELECT * FROM student WHERE status = 2",
-    [],
+    "SELECT mentor.id, user.email, user.first_name, user.last_name, user.whatsapp_phonenumber " +
+    " FROM mentor " +
+    " JOIN user ON (mentor.user_id = user.id) " +
+    " WHERE mentor.active = 1 and mentor.chief_id = ? ",
+    [chief_id],
     (err, rows, fields) => {
-      if (rows.length > 0) {
-        return res.status(200).json(rows)
-      } else {
-        return res.status(201).json({ students: [] })
+      if(err) {
+        console.log(err)
+        return res.status(501)
       }
+      return res.status(200).json(rows)
     }
   )
 })
 
 router.post("/getPendingStudents", (req, res) => {
   mysqlConnection.query(
-    "SELECT * FROM student WHERE status = 0",
+    "SELECT user.email, user.first_name, user.last_name, user.whatsapp_phonenumber, " +
+    " user.country, user.province, user.city, user.gender, student.created_at, student.status FROM student " +
+    " JOIN user ON (student.user_id = user.id) " +
+    " WHERE student.status = 0",
     [],
     (err, rows, fields) => {
-      if (rows.length > 0) {
-        return res.status(200).json(rows)
-      } else {
-        return res.status(201).json({ students: [] })
+      if(err) {
+        console.log(err)
+        return res.status(501)
       }
+      return res.status(200).json(rows)
     }
   )
 })
